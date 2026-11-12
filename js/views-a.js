@@ -35,7 +35,7 @@ export function home() {
   const near = p ? [...sites].sort((a, b) => Geo.distance(p, a.gps) - Geo.distance(p, b.gps))[0] : null;
   const upcoming = D.index.sites.filter((s) => s.festival).map((s) => ({ s, d: nextFest(s.festival) }))
     .filter((x) => x.d).sort((a, b) => a.d - b.d)[0];
-  const heroImg = D.byId["phat-tich"]?.cover?.src || coverOf(sites[0]);
+  const heroImg = D.byId["phat-tich"]?.cover?.mid || D.byId["phat-tich"]?.cover?.src || coverOf(sites[0]);
   const quick = [
     ["#/routes", "route", "quickRoutes"], ["#/plan", "clock", "quickPlan"], ["#/food", "food", "quickFood"], ["#/festivals", "lantern", "quickFest"],
     ["#/timeline", "timeline", "quickTimeline"], ["#/passport", "passport", "quickPassport"], ["#/class", "class", "quickClass"], ["#/qr", "qr", "quickQr"],
@@ -47,7 +47,7 @@ export function home() {
   });
   return `<div class="wrap">
     <section class="hero">
-      <img class="bg" src="${esc(heroImg)}" alt="">
+      <img class="bg" src="${esc(heroImg)}" alt="" fetchpriority="high">
       <img class="seal" src="img/brand/logo-dau-son.svg" alt="Kinh Bắc">
       <div class="inner">
         <span class="label">${t("heroLabel")}</span>
@@ -63,13 +63,13 @@ export function home() {
         <span class="btn small primary" style="margin-left:auto">${icon("play")}${t("open")}</span></a>` : ""}
     <nav class="quick" aria-label="${t("more")}">${quick.map(([h, ic, k]) => `<a href="${h}"><span class="ic">${icon(ic)}</span>${t(k)}</a>`).join("")}</nav>
     ${upcoming ? `<a class="card fest" href="#/festivals" style="margin-top:14px"><div class="cal"><b>${upcoming.d.getMonth() + 1}/${upcoming.d.getFullYear()}</b><span>${upcoming.d.getDate()}</span></div>
-      <div><span class="label">${t("festival")} · ${t("daysLeft", Math.round((upcoming.d - new Date().setHours(0, 0, 0, 0)) / 864e5))}</span><h3 style="margin:2px 0 0">${esc(L(upcoming.s.festival.name))}</h3>
+      <div><span class="label">${t("festival")} · ${t("daysLeft", Math.round((upcoming.d - new Date().setHours(0, 0, 0, 0)) / 864e5))}</span><h2 style="margin:2px 0 0;font-size:1.12rem">${esc(L(upcoming.s.festival.name))}</h2>
       <span class="small muted">${esc(L(upcoming.s.festival.span))}</span></div></a>` : ""}
     <div class="section"><h2>${t("routes")}</h2><a href="#/routes">${t("seeAll")}</a></div>
     <div class="hscroll">${D.index.routes.map(routeCard).join("")}</div>
     <div class="section"><h2>${t("allSites")}</h2><a href="#/map">${t("navMap")}</a></div>
     <div class="site-list">${(p ? [...sites].sort((a, b) => Geo.distance(p, a.gps) - Geo.distance(p, b.gps)) : sites).map(siteItem).join("")}</div>
-    <footer class="foot"><img src="img/brand/logo-dau-son.svg" alt=""><p>Kinh Bắc Ký Sự · Heritage Lens<br>STEMPETITION 2027 · <a href="#/about">${t("about")}</a></p></footer>
+    <footer class="foot"><img src="img/brand/logo-dau-son.svg" alt=""><p>Kinh Bắc Ký Sự · Heritage Lens · v${esc(D.index.about?.app_version || "")}<br>STEMPETITION 2027 · <a href="#/about">${t("about")}</a></p></footer>
   </div>`;
 }
 function routeCard(r) {
@@ -202,7 +202,7 @@ export async function sitePage(id, tab = "tour") {
   const byKind = {};
   (s.sources || []).forEach((src) => { (byKind[src.kind] ||= []).push(src); });
   return `<div class="wrap">
-    <div class="cover">${s.cover ? `<img src="${esc(s.cover.src)}" alt="${esc(L(s.name))}">` : `<div class="nocover"></div>`}
+    <div class="cover">${s.cover ? `<img src="${esc(s.cover.mid || s.cover.src)}" alt="${esc(L(s.name))}" fetchpriority="high">` : `<div class="nocover"></div>`}
       <span class="count">${stampSvg(sum, stampState(id), 44)}</span>
       <div class="inner">${r ? `<span class="label" style="color:var(--vang-500)">${t("navRoutes")} ${r.num} · ${esc(L(r.name))}</span>` : ""}
         <h1>${esc(L(s.name))}</h1><div class="alt">${esc(L(s.alt) || "")}</div>

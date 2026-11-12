@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Kinh Bắc Ký Sự – Heritage Lens</title>
+  <meta name="description" content="Ứng dụng thuyết minh 6 di tích lịch sử – văn hóa tỉnh Bắc Ninh, nội dung đã được giáo viên thẩm định.">
+  <meta name="theme-color" content="#7a2a1c">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <!-- Thanh trên cùng: tên ứng dụng và nút đổi ngôn ngữ -->
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="Trang chủ">
+      <span class="brand-seal" aria-hidden="true">京北</span>
+      <span class="brand-text">
+        <strong>Kinh Bắc Ký Sự</strong>
+        <small>Heritage Lens</small>
+      </span>
+    </a>
+    <div class="topbar-actions">
+      <a class="icon-link" href="#about" data-i18n-aria="about" aria-label="Giới thiệu">?</a>
+      <button class="lang-btn" id="langBtn" type="button" aria-label="Đổi ngôn ngữ">EN</button>
+    </div>
+  </header>
+
+  <!-- Thông báo khi đến gần một di tích (GPS) -->
+  <div class="nearby" id="nearby" hidden>
+    <span id="nearbyText"></span>
+    <button type="button" id="nearbyPlay"></button>
+    <button type="button" class="nearby-close" id="nearbyClose" aria-label="Đóng">×</button>
+  </div>
+
+  <!-- Nội dung từng màn hình được dựng bằng js/app.js -->
+  <main id="view" tabindex="-1"></main>
+
+  <!-- Trình phát thuyết minh, luôn nằm ở đáy màn hình -->
+  <div class="player" id="player" hidden>
+    <button type="button" class="player-toggle" id="playerToggle" aria-label="Phát / tạm dừng">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path id="playerIcon" d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="player-info">
+      <a id="playerTitle" class="player-title" href="#"></a>
+      <div class="player-bar">
+        <span id="playerTime">0:00</span>
+        <input type="range" id="playerSeek" min="0" max="100" value="0" step="0.1" aria-label="Tua">
+        <span id="playerDur">0:00</span>
+      </div>
+    </div>
+  </div>
+  <audio id="audio" preload="none"></audio>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/geo.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -311,6 +311,8 @@ export function about() {
     <ol>${(a.steps || []).map((x) => `<li style="margin-bottom:8px">${esc(L(x))}</li>`).join("")}</ol>
     <div class="section"><h2>${L({ vi: "Giọng đọc và ảnh", en: "Voices and photos", ko: "음성과 사진" })}</h2></div>
     <p>${esc(L(a.voice) || "")}</p><p>${esc(L(a.photos) || "")}</p>
+    <div class="section"><h2>${L({ vi: "Nhật ký phiên bản", en: "Version history", ko: "버전 기록" })}</h2><span class="tag">v${esc(a.app_version || "")}</span></div>
+    <ol class="versions">${(a.versions || []).slice().reverse().map((x) => `<li><div class="row" style="gap:8px;align-items:baseline"><b>${esc(x.v)}</b><span class="small">${esc(L(x.title))}</span><span class="tiny muted" style="margin-left:auto">${esc(x.date)}</span></div><p class="small" style="margin:4px 0 0">${esc(L(x))}</p>${x.v === "v1.0" ? `<a class="small" href="v1/" target="_blank" rel="noopener">${L({ vi: "Mở bản v1.0 để so sánh", en: "Open v1.0 to compare", ko: "v1.0 열기" })}</a>` : ""}</li>`).join("")}</ol>
     <div class="section"><h2>${L({ vi: "Quyền riêng tư", en: "Privacy", ko: "개인정보" })}</h2></div><p>${esc(L(a.privacy) || "")}</p>
     <div class="section"><h2>${L({ vi: "Mã nguồn mở được dùng", en: "Open-source components", ko: "오픈소스" })}</h2></div>
     <ul class="small">${(a.credits || []).map((c) => `<li>${esc(c)}</li>`).join("")}</ul></div>`;

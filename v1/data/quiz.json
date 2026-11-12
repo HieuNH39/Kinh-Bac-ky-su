@@ -1,0 +1,641 @@
+{
+  "note": "Câu đố minigame: mỗi câu lấy từ kịch bản thuyết minh đã duyệt (trường stop = điểm dừng chứa dữ kiện). Không trùng dữ kiện với đề kiểm tra thực nghiệm.",
+  "sites": {
+    "phat-tich": [
+      {
+        "stop": "PT-02",
+        "q": {
+          "vi": "Bộ mười linh thú bằng đá ở chùa Phật Tích được công nhận Bảo vật quốc gia năm nào?",
+          "en": "In which year was the set of ten stone sacred animals at Phật Tích recognised as a National Treasure?"
+        },
+        "options": {
+          "vi": [
+            "Năm 2012",
+            "Năm 2015",
+            "Năm 2017",
+            "Năm 2024"
+          ],
+          "en": [
+            "2012",
+            "2015",
+            "2017",
+            "2024"
+          ]
+        },
+        "answer": 2,
+        "explain": {
+          "vi": "Bộ linh thú được công nhận Bảo vật quốc gia năm 2017. Năm 2012 là năm tượng Phật A Di Đà được công nhận.",
+          "en": "The animals became a National Treasure in 2017. 2012 is the year the Amitābha statue was recognised."
+        }
+      },
+      {
+        "stop": "PT-02",
+        "q": {
+          "vi": "Trong hàng linh thú, con nào không nằm rạp hẳn mà hơi nhoài về phía trước, đầu quay về lối vào?",
+          "en": "Which animal in the row does not lie flat but leans forward, its head turned towards the entrance?"
+        },
+        "options": {
+          "vi": [
+            "Con voi",
+            "Con sư tử",
+            "Con ngựa",
+            "Con trâu"
+          ],
+          "en": [
+            "The elephant",
+            "The lion",
+            "The horse",
+            "The buffalo"
+          ]
+        },
+        "answer": 1,
+        "explain": {
+          "vi": "Con sư tử hơi nhoài về phía trước, đầu quay về lối vào, khác hẳn các con còn lại.",
+          "en": "The lion leans forward with its head turned to the entrance, unlike the others."
+        }
+      },
+      {
+        "stop": "PT-01",
+        "q": {
+          "vi": "Trong kháng chiến chống Pháp, tượng Phật A Di Đà thời Lý bị hư hại thế nào?",
+          "en": "How was the Lý-dynasty Amitābha statue damaged during the resistance war against the French?"
+        },
+        "options": {
+          "vi": [
+            "Bị mất toàn bộ phần bệ",
+            "Đầu tượng bị gãy rời",
+            "Bị đưa ra nước ngoài",
+            "Bị cháy mất lớp đá ngoài"
+          ],
+          "en": [
+            "Its whole base was lost",
+            "Its head was broken off",
+            "It was taken abroad",
+            "Its outer stone burned away"
+          ]
+        },
+        "answer": 1,
+        "explain": {
+          "vi": "Tượng bị hư hại nặng, đầu tượng bị gãy rời; sau năm 1954 tượng được tu sửa lại.",
+          "en": "The statue was badly damaged and its head broke off; it was repaired after 1954."
+        }
+      },
+      {
+        "stop": "PT-03",
+        "q": {
+          "vi": "Khi hoàn thành năm 2010, pho tượng A Di Đà lộ thiên trên đỉnh núi Phật Tích được ghi nhận là gì?",
+          "en": "When completed in 2010, what record was the open-air Amitābha statue on Phật Tích mountain recognised for?"
+        },
+        "options": {
+          "vi": [
+            "Tượng Phật bằng đồng lớn nhất châu Á",
+            "Tượng Phật bằng đá lớn nhất Đông Nam Á lúc bấy giờ",
+            "Tượng Phật cổ nhất Việt Nam",
+            "Tượng Phật nằm dài nhất thế giới"
+          ],
+          "en": [
+            "The largest bronze Buddha in Asia",
+            "The largest stone Buddha in Southeast Asia at the time",
+            "The oldest Buddha statue in Viet Nam",
+            "The longest reclining Buddha in the world"
+          ]
+        },
+        "answer": 1,
+        "explain": {
+          "vi": "Khi hoàn thành, đây là pho tượng Phật bằng đá lớn nhất Đông Nam Á lúc bấy giờ.",
+          "en": "When completed, it was the largest stone Buddha in Southeast Asia at the time."
+        }
+      }
+    ],
+    "den-do": [
+      {
+        "stop": "DD-00",
+        "q": {
+          "vi": "Lễ hội Đền Đô diễn ra vào những ngày nào?",
+          "en": "When is the Đô Temple festival held?"
+        },
+        "options": {
+          "vi": [
+            "Mùng 5 đến mùng 7 tháng Giêng âm lịch",
+            "Ngày 16 đến 18 tháng Hai âm lịch",
+            "Ngày 14 đến 16 tháng Ba âm lịch",
+            "Rằm tháng Bảy âm lịch"
+          ],
+          "en": [
+            "5th–7th day of the 1st lunar month",
+            "16th–18th day of the 2nd lunar month",
+            "14th–16th day of the 3rd lunar month",
+            "15th day of the 7th lunar month"
+          ]
+        },
+        "answer": 2,
+        "explain": {
+          "vi": "Lễ hội Đền Đô diễn ra từ ngày 14 đến 16 tháng Ba âm lịch, kỷ niệm ngày vua Lý Thái Tổ lên ngôi.",
+          "en": "The festival runs from the 14th to the 16th of the 3rd lunar month, marking King Lý Thái Tổ's enthronement."
+        }
+      },
+      {
+        "stop": "DD-02",
+        "q": {
+          "vi": "Bài Chiếu dời đô khắc trên cuốn thư gốm Bát Tràng gồm bao nhiêu chữ Hán?",
+          "en": "How many Chinese characters make up the Edict on Moving the Capital carved on the Bát Tràng ceramic scroll?"
+        },
+        "options": {
+          "vi": [
+            "108 chữ",
+            "214 chữ",
+            "1.010 chữ",
+            "2.000 chữ"
+          ],
+          "en": [
+            "108",
+            "214",
+            "1,010",
+            "2,000"
+          ]
+        },
+        "answer": 1,
+        "explain": {
+          "vi": "Bài chiếu gồm 214 chữ Hán. Con số 1010 là năm ban chiếu.",
+          "en": "The edict has 214 characters. 1010 is the year it was issued."
+        }
+      },
+      {
+        "stop": "DD-03",
+        "q": {
+          "vi": "Dân ca Quan họ Bắc Ninh được UNESCO ghi danh là Di sản văn hóa phi vật thể đại diện của nhân loại năm nào?",
+          "en": "In which year did UNESCO inscribe Quan họ Bắc Ninh folk songs as Intangible Cultural Heritage of Humanity?"
+        },
+        "options": {
+          "vi": [
+            "Năm 2009",
+            "Năm 2012",
+            "Năm 2019",
+            "Năm 2025"
+          ],
+          "en": [
+            "2009",
+            "2012",
+            "2019",
+            "2025"
+          ]
+        },
+        "answer": 0,
+        "explain": {
+          "vi": "Quan họ Bắc Ninh được UNESCO ghi danh năm 2009.",
+          "en": "Quan họ was inscribed by UNESCO in 2009."
+        }
+      },
+      {
+        "stop": "DD-01",
+        "q": {
+          "vi": "Dòng họ Lý ở Hàn Quốc là con cháu của vị hoàng tử nào đã vượt biển sang Cao Ly vào thế kỷ XIII?",
+          "en": "The Lý family in Korea descends from which prince who crossed the sea to Goryeo in the 13th century?"
+        },
+        "options": {
+          "vi": [
+            "Lý Long Tường",
+            "Lý Phật Mã",
+            "Lý Nhật Tôn",
+            "Lý Càn Đức"
+          ],
+          "en": [
+            "Lý Long Tường",
+            "Lý Phật Mã",
+            "Lý Nhật Tôn",
+            "Lý Càn Đức"
+          ]
+        },
+        "answer": 0,
+        "explain": {
+          "vi": "Đó là hoàng tử Lý Long Tường. Ông Lý Xương Căn, hậu duệ đời thứ 31 của vua Lý Thái Tổ, đã về thăm quê gốc Cổ Pháp năm 1994.",
+          "en": "It was Prince Lý Long Tường. Lý Xương Căn, a 31st-generation descendant of King Lý Thái Tổ, visited Cổ Pháp in 1994."
+        }
+      }
+    ],
+    "tay-yen-tu": [
+      {
+        "stop": "TYT-00",
+        "q": {
+          "vi": "Chùa Đồng trên đỉnh Yên Tử cao bao nhiêu mét?",
+          "en": "How high above sea level is the Bronze Pagoda on the summit of Yên Tử?"
+        },
+        "options": {
+          "vi": [
+            "868 mét",
+            "1.068 mét",
+            "1.268 mét",
+            "2.068 mét"
+          ],
+          "en": [
+            "868 m",
+            "1,068 m",
+            "1,268 m",
+            "2,068 m"
+          ]
+        },
+        "answer": 1,
+        "explain": {
+          "vi": "Chùa Đồng nằm trên đỉnh Yên Tử, cao 1.068 mét.",
+          "en": "The Bronze Pagoda stands on the summit at 1,068 metres."
+        }
+      },
+      {
+        "stop": "TYT-01",
+        "q": {
+          "vi": "Các ngôi chùa ở Tây Yên Tử như chùa Hạ, chùa Trung, chùa Thượng được đặt tên theo điều gì?",
+          "en": "How were the pagodas at West Yên Tử, such as the Lower, Middle and Upper pagodas, named?"
+        },
+        "options": {
+          "vi": [
+            "Theo tên vị sư trụ trì",
+            "Theo năm xây dựng",
+            "Theo vị trí: dưới, giữa và trên cao",
+            "Theo tên làng gần đó"
+          ],
+          "en": [
+            "After their abbots",
+            "By year of construction",
+            "By position: low, middle and high",
+            "After nearby villages"
+          ]
+        },
+        "answer": 2,
+        "explain": {
+          "vi": "Chùa Hạ ở dưới, chùa Trung ở giữa, chùa Thượng ở trên cao.",
+          "en": "The Lower pagoda is at the bottom, the Middle in between, the Upper high on the mountain."
+        }
+      },
+      {
+        "stop": "TYT-02",
+        "q": {
+          "vi": "Tháng 7 năm 2025, UNESCO ghi danh quần thể nào là Di sản văn hóa thế giới?",
+          "en": "In July 2025, which complex did UNESCO inscribe as a World Cultural Heritage site?"
+        },
+        "options": {
+          "vi": [
+            "Quần thể di tích Cố đô Huế",
+            "Quần thể Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc",
+            "Hoàng thành Thăng Long",
+            "Quần thể danh thắng Tràng An"
+          ],
+          "en": [
+            "The Complex of Huế Monuments",
+            "The Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc complex",
+            "The Thăng Long Imperial Citadel",
+            "The Tràng An Landscape Complex"
+          ]
+        },
+        "answer": 1,
+        "explain": {
+          "vi": "Đó là Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc, trải trên Quảng Ninh, Hải Phòng và Bắc Ninh.",
+          "en": "It is the Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc complex, spread across Quảng Ninh, Hải Phòng and Bắc Ninh."
+        }
+      },
+      {
+        "stop": "TYT-03",
+        "q": {
+          "vi": "Hệ thống tác phẩm điêu khắc trên Đồi Vô Cực tái hiện điều gì?",
+          "en": "What do the sculptures on Vô Cực Hill depict?"
+        },
+        "options": {
+          "vi": [
+            "Các trận đánh của nhà Lý",
+            "Hành trình cuộc đời Phật hoàng Trần Nhân Tông",
+            "Mười tám vị La Hán",
+            "Cảnh sinh hoạt của làng quê Kinh Bắc"
+          ],
+          "en": [
+            "The battles of the Lý dynasty",
+            "The life journey of Buddha-King Trần Nhân Tông",
+            "The eighteen Arhats",
+            "Village life in Kinh Bắc"
+          ]
+        },
+        "answer": 1,
+        "explain": {
+          "vi": "Các tác phẩm tái hiện hành trình của Phật hoàng Trần Nhân Tông, từ vị vua chống quân Mông – Nguyên đến khi lên núi tu hành.",
+          "en": "They retrace Trần Nhân Tông's journey, from king fighting the Mongol–Yuan to monk on the mountain."
+        }
+      }
+    ],
+    "bo-da": [
+      {
+        "stop": "BD-01",
+        "q": {
+          "vi": "Vườn tháp chùa Bổ Đà có bao nhiêu ngôi tháp lớn nhỏ?",
+          "en": "How many towers, large and small, stand in the Bổ Đà tower garden?"
+        },
+        "options": {
+          "vi": [
+            "57 ngôi",
+            "107 ngôi",
+            "207 ngôi",
+            "1.000 ngôi"
+          ],
+          "en": [
+            "57",
+            "107",
+            "207",
+            "1,000"
+          ]
+        },
+        "answer": 1,
+        "explain": {
+          "vi": "Vườn tháp có 107 ngôi tháp, được xây dần trong khoảng 300 năm.",
+          "en": "The garden has 107 towers, built over about 300 years."
+        }
+      },
+      {
+        "stop": "BD-02",
+        "q": {
+          "vi": "Các tấm mộc bản ở chùa Bổ Đà được làm bằng loại gỗ nào?",
+          "en": "What wood are the Bổ Đà woodblocks made of?"
+        },
+        "options": {
+          "vi": [
+            "Gỗ lim",
+            "Gỗ mít",
+            "Gỗ thị",
+            "Gỗ thông"
+          ],
+          "en": [
+            "Ironwood",
+            "Jackfruit wood",
+            "Persimmon (thị) wood",
+            "Pine"
+          ]
+        },
+        "answer": 2,
+        "explain": {
+          "vi": "Ván làm bằng gỗ thị: mịn, dễ khắc và bền.",
+          "en": "They are persimmon (thị) wood: fine-grained, easy to carve and durable."
+        }
+      },
+      {
+        "stop": "BD-03",
+        "q": {
+          "vi": "Lối kiến trúc \"nội thông ngoại bế\" của chùa Bổ Đà có nghĩa là gì?",
+          "en": "What does Bổ Đà's \"open inside, closed outside\" layout mean?"
+        },
+        "options": {
+          "vi": [
+            "Bên trong các tòa nhà thông nhau, bên ngoài khép kín bởi tường bao",
+            "Chùa chỉ mở cửa vào ngày lễ",
+            "Bên trong có hồ nước, bên ngoài có vườn",
+            "Chùa không có cổng chính"
+          ],
+          "en": [
+            "Buildings connect inside, enclosed by walls outside",
+            "The pagoda opens only on festival days",
+            "A pond inside, a garden outside",
+            "The pagoda has no main gate"
+          ]
+        },
+        "answer": 0,
+        "explain": {
+          "vi": "Bên trong các tòa nhà thông với nhau, bên ngoài khép kín bởi tường bao, nên không gian chùa luôn tĩnh lặng.",
+          "en": "Inside, the buildings connect; outside, walls enclose them, keeping the pagoda quiet."
+        }
+      },
+      {
+        "stop": "BD-00",
+        "q": {
+          "vi": "Tên \"Bổ Đà\" bắt nguồn từ đâu?",
+          "en": "Where does the name \"Bổ Đà\" come from?"
+        },
+        "options": {
+          "vi": [
+            "Tên một vị vua nhà Lê",
+            "Potalaka, ngọn núi gắn với Bồ Tát Quán Thế Âm",
+            "Tên một khúc sông Cầu",
+            "Tên vị sư sáng lập chùa"
+          ],
+          "en": [
+            "A Lê-dynasty king",
+            "Potalaka, the mountain linked to Avalokiteśvara",
+            "A stretch of the Cầu River",
+            "The founding monk"
+          ]
+        },
+        "answer": 1,
+        "explain": {
+          "vi": "\"Bổ Đà\" bắt nguồn từ Potalaka, ngọn núi gắn với Bồ Tát Quán Thế Âm trong kinh Phật.",
+          "en": "It comes from Potalaka, the mountain of Avalokiteśvara in Buddhist scripture."
+        }
+      }
+    ],
+    "vinh-nghiem": [
+      {
+        "stop": "VN-00",
+        "q": {
+          "vi": "Chùa Vĩnh Nghiêm được xếp hạng Di tích quốc gia đặc biệt năm nào?",
+          "en": "In which year was Vĩnh Nghiêm Pagoda ranked a Special National Monument?"
+        },
+        "options": {
+          "vi": [
+            "Năm 2012",
+            "Năm 2015",
+            "Năm 2019",
+            "Năm 2025"
+          ],
+          "en": [
+            "2012",
+            "2015",
+            "2019",
+            "2025"
+          ]
+        },
+        "answer": 1,
+        "explain": {
+          "vi": "Chùa được xếp hạng Di tích quốc gia đặc biệt năm 2015.",
+          "en": "It was ranked a Special National Monument in 2015."
+        }
+      },
+      {
+        "stop": "VN-02",
+        "q": {
+          "vi": "Ngoài chùa Vĩnh Nghiêm, nơi nào được nhắc đến là còn giữ bộ tượng Tam Tổ cổ và nguyên vẹn?",
+          "en": "Besides Vĩnh Nghiêm, which place is mentioned as still keeping an old, intact set of the Three Patriarchs statues?"
+        },
+        "options": {
+          "vi": [
+            "Chùa Hoa Yên ở Quảng Ninh",
+            "Chùa Một Cột ở Hà Nội",
+            "Chùa Phật Tích ở Bắc Ninh",
+            "Chùa Thiên Mụ ở Huế"
+          ],
+          "en": [
+            "Hoa Yên Pagoda, Quảng Ninh",
+            "One Pillar Pagoda, Hà Nội",
+            "Phật Tích Pagoda, Bắc Ninh",
+            "Thiên Mụ Pagoda, Huế"
+          ]
+        },
+        "answer": 0,
+        "explain": {
+          "vi": "Bài thuyết minh nhắc chùa Hoa Yên ở Quảng Ninh và chùa Phổ Minh ở Nam Định cũ.",
+          "en": "The narration names Hoa Yên in Quảng Ninh and Phổ Minh in former Nam Định."
+        }
+      },
+      {
+        "stop": "VN-02",
+        "q": {
+          "vi": "Vua Trần Nhân Tông nhường ngôi và xuất gia vào năm nào?",
+          "en": "In which year did King Trần Nhân Tông give up the throne and become a monk?"
+        },
+        "options": {
+          "vi": [
+            "Năm 1285",
+            "Năm 1288",
+            "Năm 1299",
+            "Năm 1407"
+          ],
+          "en": [
+            "1285",
+            "1288",
+            "1299",
+            "1407"
+          ]
+        },
+        "answer": 2,
+        "explain": {
+          "vi": "Ngài xuất gia năm 1299. Năm 1285 và 1288 là hai lần đánh thắng quân Mông – Nguyên.",
+          "en": "He became a monk in 1299. 1285 and 1288 were the victories over the Mongol–Yuan."
+        }
+      },
+      {
+        "stop": "VN-01",
+        "q": {
+          "vi": "Vì chùa Vĩnh Nghiêm từng là nơi đào tạo tăng sĩ lớn, việc khắc in kinh sách ở đây được ví như gì?",
+          "en": "Because Vĩnh Nghiêm trained many monks, what is its woodblock printing compared to?"
+        },
+        "options": {
+          "vi": [
+            "Một khu chợ sách",
+            "\"Nhà xuất bản\" của một trường học Phật giáo",
+            "Một bảo tàng mỹ thuật",
+            "Một xưởng làm giấy"
+          ],
+          "en": [
+            "A book market",
+            "The \"publishing house\" of a Buddhist school",
+            "An art museum",
+            "A paper mill"
+          ]
+        },
+        "answer": 1,
+        "explain": {
+          "vi": "Việc khắc in kinh sách ở đây giống như \"nhà xuất bản\" của một trường học Phật giáo.",
+          "en": "Its printing was like the \"publishing house\" of a Buddhist school."
+        }
+      }
+    ],
+    "xuong-giang": [
+      {
+        "stop": "XG-00",
+        "q": {
+          "vi": "Khu di tích Địa điểm chiến thắng Xương Giang được xếp hạng Di tích quốc gia đặc biệt năm nào?",
+          "en": "In which year was the Xương Giang Victory Site ranked a Special National Monument?"
+        },
+        "options": {
+          "vi": [
+            "Năm 2009",
+            "Năm 2015",
+            "Năm 2019",
+            "Năm 2023"
+          ],
+          "en": [
+            "2009",
+            "2015",
+            "2019",
+            "2023"
+          ]
+        },
+        "answer": 2,
+        "explain": {
+          "vi": "Khu di tích được xếp hạng Di tích quốc gia đặc biệt năm 2019.",
+          "en": "It was ranked a Special National Monument in 2019."
+        }
+      },
+      {
+        "stop": "XG-00",
+        "q": {
+          "vi": "Lễ hội Xương Giang được tổ chức vào thời gian nào hằng năm?",
+          "en": "When is the Xương Giang festival held each year?"
+        },
+        "options": {
+          "vi": [
+            "Mùng 5 đến mùng 7 tháng Giêng",
+            "Ngày 14 đến 16 tháng Ba âm lịch",
+            "Ngày 16 đến 18 tháng Hai âm lịch",
+            "Rằm tháng Giêng âm lịch"
+          ],
+          "en": [
+            "5th–7th day of the 1st lunar month",
+            "14th–16th day of the 3rd lunar month",
+            "16th–18th day of the 2nd lunar month",
+            "15th day of the 1st lunar month"
+          ]
+        },
+        "answer": 0,
+        "explain": {
+          "vi": "Lễ hội diễn ra từ mùng 5 đến mùng 7 tháng Giêng để tưởng nhớ chiến thắng.",
+          "en": "It runs from the 5th to the 7th of the 1st lunar month to honour the victory."
+        }
+      },
+      {
+        "stop": "XG-00",
+        "q": {
+          "vi": "Năm 2027 là kỷ niệm bao nhiêu năm chiến thắng Chi Lăng – Xương Giang?",
+          "en": "Which anniversary of the Chi Lăng – Xương Giang victory falls in 2027?"
+        },
+        "options": {
+          "vi": [
+            "500 năm",
+            "590 năm",
+            "600 năm",
+            "700 năm"
+          ],
+          "en": [
+            "500th",
+            "590th",
+            "600th",
+            "700th"
+          ]
+        },
+        "answer": 2,
+        "explain": {
+          "vi": "Chiến thắng năm 1427, nên năm 2027 tròn 600 năm. Năm 2017 là dịp 590 năm.",
+          "en": "The victory was in 1427, so 2027 is the 600th anniversary. 2017 marked the 590th."
+        }
+      },
+      {
+        "stop": "XG-02",
+        "q": {
+          "vi": "Chiến thắng Xương Giang là ví dụ tiêu biểu cho nghệ thuật quân sự nào?",
+          "en": "The Xương Giang victory is a classic example of which military art?"
+        },
+        "options": {
+          "vi": [
+            "Đánh nhanh, thắng nhanh",
+            "Lấy ít thắng nhiều, lấy yếu đánh mạnh",
+            "Rút lui để bảo toàn lực lượng",
+            "Dời đô để tránh giặc"
+          ],
+          "en": [
+            "Quick strikes for quick wins",
+            "The few defeating the many, the weak defeating the strong",
+            "Retreating to preserve forces",
+            "Moving the capital to avoid the enemy"
+          ]
+        },
+        "answer": 1,
+        "explain": {
+          "vi": "Đây là ví dụ tiêu biểu cho nghệ thuật \"lấy ít thắng nhiều, lấy yếu đánh mạnh\".",
+          "en": "It exemplifies \"the few defeating the many, the weak defeating the strong\"."
+        }
+      }
+    ]
+  }
+}
