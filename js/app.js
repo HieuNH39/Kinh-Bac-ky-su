@@ -75,7 +75,7 @@ async function render() {
         if (typeof html === "string") view.innerHTML = html;
       } catch (e) {
         console.error(e);
-        view.innerHTML = `<div class="wrap empty"><p>${t("notFound")}</p><a class="btn" href="#/">${t("navHome")}</a></div>`;
+        view.innerHTML = `<div class="wrap empty"><p>${navigator.onLine ? t("notFound") : t("offlineMissing")}</p><a class="btn" href="#/">${t("navHome")}</a></div>`;
       }
       if (!h.includes("/site/") || !h.split("/")[3]) window.scrollTo(0, 0);
       A.afterRender?.();
