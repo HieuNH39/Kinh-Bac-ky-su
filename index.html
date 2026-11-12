@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="vi" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kinh Bắc Ký Sự – Thuyết minh di sản xứ Kinh Bắc</title>
+<meta name="description" content="Ứng dụng thuyết minh tự động theo vị trí cho 21 di tích xứ Kinh Bắc: giọng đọc, ảnh, đố vui, hộ chiếu di sản, lịch trình, ẩm thực. Dùng được khi không có mạng.">
+<meta name="theme-color" content="#a8322a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/brand/icon-app.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preload" href="fonts/alegreya-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/be-vietnam-pro-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#/"><img src="img/brand/logo-dau-son.svg" alt=""><span><b>Kinh Bắc Ký Sự</b><small>Thuyết minh di sản xứ Kinh Bắc</small></span></a>
+  <span class="spacer"></span>
+  <button class="icon-btn lang-btn" id="langBtn" type="button" aria-label="Ngôn ngữ / Language">VI</button>
+</header>
+<div class="banner" id="banner" role="status" hidden></div>
+<main id="view" tabindex="-1"><div class="wrap empty">Đang tải…</div></main>
+<div class="mini" id="mini" role="region" aria-label="Trình phát">
+  <button data-act="toggle" type="button" aria-label="Phát / tạm dừng"></button>
+  <div class="t"></div>
+  <button data-act="back10" type="button" aria-label="Lùi 10 giây">−10</button>
+  <button data-act="speed" type="button" aria-label="Tốc độ đọc">1×</button>
+  <button data-act="close" type="button" aria-label="Đóng"><svg viewBox="0 0 24 24"><path d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19l5.6-5.6 5.6 5.6 1.4-1.4-5.6-5.6z"/></svg></button>
+  <div class="bar"><i></i></div>
+</div>
+<nav class="nav" aria-label="Điều hướng chính">
+  <a href="#/" data-nav="home"><svg viewBox="0 0 24 24"><path d="M12 3 2 11h3v9h5v-6h4v6h5v-9h3z"/></svg><span>Trang chủ</span></a>
+  <a href="#/map" data-nav="map"><svg viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zm0 2.2 6 2v11.6l-6-2z"/></svg><span>Bản đồ</span></a>
+  <a href="#/routes" data-nav="routes"><svg viewBox="0 0 24 24"><path d="M6 3h2v18H6zM9 4h10l-2 4 2 4H9z"/></svg><span>Tuyến</span></a>
+  <a href="#/passport" data-nav="passport"><svg viewBox="0 0 24 24"><path d="M6 2h11a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm6 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM8 18h8v1.5H8z"/></svg><span>Hộ chiếu</span></a>
+  <a href="#/more" data-nav="more"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg><span>Thêm</span></a>
+</nav>
+<script src="vendor/leaflet/leaflet.js" defer></script>
+<script src="vendor/qrcode.js" defer></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
