@@ -21,7 +21,7 @@ export async function quizPage(siteId) {
   const draw = () => {
     if (i >= qs.length) return result();
     const q = qs[i];
-    view().innerHTML = `<div class="wrap"><a class="back" href="#/site/${siteId}">${icon("back")} ${esc(L(s.name))}</a>
+    view().innerHTML = `<div class="wrap"><a class="crumb" href="#/site/${siteId}">${esc(L(s.name))}</a>
       <div class="quiz-progress">${qs.map((_, k) => `<i class="${k <= i ? "on" : ""}"></i>`).join("")}</div>
       <p class="label" style="margin-top:14px">${t("question", i + 1, qs.length)}</p>
       <p class="quiz-q">${esc(q.q)}</p>
@@ -43,7 +43,7 @@ export async function quizPage(siteId) {
   const result = () => {
     const stamped = recordQuiz(siteId, score, qs.length);
     const pass = score >= PASS(qs.length);
-    view().innerHTML = `<div class="wrap"><a class="back" href="#/site/${siteId}">${icon("back")} ${esc(L(s.name))}</a>
+    view().innerHTML = `<div class="wrap"><a class="crumb" href="#/site/${siteId}">${esc(L(s.name))}</a>
       <div class="card framed score"><span class="label">${t("yourScore")}</span><div class="big">${score}/${qs.length}</div>
       <div style="width:120px;margin:14px auto">${stampSvg(D.byId[siteId] || s, stampState(siteId), 120)}</div>
       <p>${progress.stamped[siteId] ? t("stampEarned") : !pass ? t("stampNeedQuiz", PASS(qs.length)) : t("stampNeedVisit")}</p>
@@ -61,7 +61,7 @@ export function passport() {
   const done = sites.filter((s) => progress.stamped[s.id]).length;
   later(() => document.getElementById("certBtn")?.addEventListener("click", makeCert));
   return `<div class="wrap" style="padding-top:14px">
-    <div class="passport-head"><img src="img/brand/logo-dau-son.svg" alt="" style="width:56px;margin:0 auto 8px;border:2px solid #fbf7ef;border-radius:8px">
+    <div class="passport-head"><img src="img/brand/non-quai-thao.svg" alt="" style="width:56px;margin:0 auto 8px;border:2px solid #fbf7ef;border-radius:8px">
       <h1>${t("passport")}</h1><p style="margin:0">${t("passportText")}</p><p style="margin:8px 0 0;font:800 1.4rem var(--display)">${t("stampsCount", done, sites.length)}</p></div>
     ${D.index.routes.map((r) => `<div class="section"><h2>${r.num}. ${esc(L(r.name))}</h2></div>
       <div class="stamps">${r.sites.map((id) => D.byId[id]).filter(Boolean).map((s) => {
@@ -84,21 +84,21 @@ async function makeCert() {
   c.width = W; c.height = H;
   const g = c.getContext("2d");
   await document.fonts.ready;
-  g.fillStyle = "#f6eedf"; g.fillRect(0, 0, W, H);
-  g.strokeStyle = "#a8322a"; g.lineWidth = 10; g.strokeRect(30, 30, W - 60, H - 60);
-  g.lineWidth = 2; g.strokeRect(48, 48, W - 96, H - 96);
-  const logo = new Image(); logo.src = "img/brand/logo-dau-son.svg"; await logo.decode().catch(() => {});
+  g.fillStyle = "#fffdfb"; g.fillRect(0, 0, W, H);
+  g.strokeStyle = "#2b1a3d"; g.lineWidth = 10; g.strokeRect(30, 30, W - 60, H - 60);
+  g.strokeStyle = "#dcb46a"; g.lineWidth = 3; g.strokeRect(48, 48, W - 96, H - 96);
+  const logo = new Image(); logo.src = "img/brand/non-quai-thao.svg"; await logo.decode().catch(() => {});
   g.drawImage(logo, W / 2 - 55, 80, 110, 110);
-  g.fillStyle = "#26211c"; g.textAlign = "center";
-  g.font = "800 54px Alegreya, serif"; g.fillText(t("certificate").toUpperCase(), W / 2, 260);
+  g.fillStyle = "#24172f"; g.textAlign = "center";
+  g.font = "700 60px 'Cormorant Garamond', serif"; g.fillText(t("certificate").toUpperCase(), W / 2, 260);
   g.font = "500 28px 'Be Vietnam Pro', sans-serif"; g.fillText(t("passport"), W / 2, 310);
-  g.font = "italic 500 50px Alegreya, serif"; g.fillStyle = "#a8322a"; g.fillText(name || "…", W / 2, 400);
-  g.fillStyle = "#26211c"; g.font = "500 28px 'Be Vietnam Pro', sans-serif";
+  g.font = "italic 600 56px 'Cormorant Garamond', serif"; g.fillStyle = "#c22d5b"; g.fillText(name || "…", W / 2, 400);
+  g.fillStyle = "#24172f"; g.font = "500 28px 'Be Vietnam Pro', sans-serif";
   g.fillText(t("stampsCount", got.length, sites.length), W / 2, 455);
   const per = Math.min(got.length, 10), sz = 80, gap = 16, x0 = W / 2 - (per * (sz + gap) - gap) / 2;
   for (let i = 0; i < got.length && i < 20; i++) {
     const img = new Image();
-    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(stampSvg(got[i], "done", sz).replace(/var\(--son-600\)/g, "#a8322a"));
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(stampSvg(got[i], "done", sz).replace(/var\(--son-600\)/g, "#c22d5b"));
     await img.decode().catch(() => {});
     g.drawImage(img, x0 + (i % 10) * (sz + gap), 490 + Math.floor(i / 10) * (sz + gap), sz, sz);
   }
@@ -114,7 +114,7 @@ export function timeline() {
   const list = [...D.index.sites].filter((s) => s.era?.year != null).sort((a, b) => a.era.year - b.era.year);
   return `<div class="wrap"><div class="section" style="margin-top:16px"><h2>${t("timeline")}</h2></div><p class="muted small">${t("timelineText")}</p>
     <ol class="timeline">${list.map((s) => `<li><div class="yr">${s.era.year < 0 ? `${-s.era.year} TCN` : s.era.year}</div>
-      <a class="card site-item" href="#/site/${s.id}" style="margin-top:6px"><img src="${esc(s.cover?.thumb || "")}" alt="" loading="lazy"><div class="meta"><h3>${esc(L(s.name))}</h3>
+      <a class="card site-item" href="#/site/${s.id}" style="margin-top:6px"><img src="${esc(s.cover?.thumb || "img/brand/icon-app.svg")}" alt="" loading="lazy"><div class="meta"><h3>${esc(L(s.name))}</h3>
       <span class="tiny muted">${esc(L(s.era.label) || "")}</span><span class="lead">${esc(L(s.era.event) || L(s.lead))}</span></div></a></li>`).join("")}</ol></div>`;
 }
 
@@ -304,7 +304,7 @@ export function about() {
   const a = D.index.about || {};
   const st = D.index.stats || {};
   return `<div class="wrap"><div class="section" style="margin-top:16px"><h2>${t("about")}</h2></div>
-    <div class="card framed"><div class="card-body"><div class="row"><img src="img/brand/logo-dau-son.svg" alt="" style="width:56px;border-radius:8px"><div><h3 style="margin:0">Kinh Bắc Ký Sự</h3><span class="small muted">Heritage Lens · STEMPETITION 2027</span></div></div>
+    <div class="card framed"><div class="card-body"><div class="row"><img src="img/brand/non-quai-thao.svg" alt="" style="width:56px;border-radius:8px"><div><h3 style="margin:0">Kinh Bắc Ký Sự</h3><span class="small muted">Heritage Lens · STEMPETITION 2027</span></div></div>
       <p style="margin-top:12px">${esc(L(a.intro) || "")}</p>
       <p class="small"><b>${st.sites || 0}</b> ${t("allSites").toLowerCase()} · <b>${st.stops || 0}</b> ${t("stops", "").trim()} · <b>${st.photos || 0}</b> ${t("photoBy").toLowerCase()} · <b>${st.quiz || 0}</b> ${t("quiz").toLowerCase()} · <b>${st.sources || 0}</b> ${t("sources").toLowerCase()}</p></div></div>
     <div class="section"><h2>${t("howMade")}</h2></div>
@@ -323,10 +323,10 @@ export async function qrSheet(siteId) {
   if (!siteId) {
     return `<div class="wrap"><div class="section" style="margin-top:16px"><h2>${t("qrSheet")}</h2></div>
       <p class="small muted">${L({ vi: "Chọn di tích để in bảng mã QR cho từng điểm dừng. Dán mã tại chỗ để khách quét là nghe, đồng thời được tính là đã đến di tích.", en: "Pick a site to print QR codes for each stop. Scanning a code on site plays the stop and counts as a visit.", ko: "유적을 골라 지점별 QR 코드를 인쇄하세요." })}</p>
-      <div class="site-list">${D.index.sites.map((s) => `<a class="card site-item" href="#/qr/${s.id}"><img src="${esc(s.cover?.thumb || "")}" alt=""><div class="meta"><h3>${esc(L(s.name))}</h3><span class="tiny muted">${t("stops", s.stopCount)}</span></div></a>`).join("")}</div></div>`;
+      <div class="site-list">${D.index.sites.map((s) => `<a class="card site-item" href="#/qr/${s.id}"><img src="${esc(s.cover?.thumb || "img/brand/icon-app.svg")}" alt=""><div class="meta"><h3>${esc(L(s.name))}</h3><span class="tiny muted">${t("stops", s.stopCount)}</span></div></a>`).join("")}</div></div>`;
   }
   const s = await loadSite(siteId);
-  return `<div class="wrap"><div class="no-print"><a class="back" href="#/qr">${icon("back")} ${t("qrSheet")}</a>
+  return `<div class="wrap"><div class="no-print"><a class="crumb" href="#/qr">${t("qrSheet")}</a>
     <div class="row" style="margin:10px 0"><button class="btn primary" onclick="print()">${icon("download")}${L({ vi: "In trang này", en: "Print", ko: "인쇄" })}</button></div></div>
     <h2>${esc(L(s.name))}</h2><div class="qr-sheet">${s.stops.map((st, i) => `<div class="card qr-card"><span class="label">${t("stopOf", i, s.stops.length - 1)}</span>
       ${qrSvg(stopUrl(st.id))}<b>${esc(L(st.title))}</b><div class="tiny muted">${esc(st.id)} · Kinh Bắc Ký Sự</div></div>`).join("")}</div></div>`;

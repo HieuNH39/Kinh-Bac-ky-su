@@ -83,8 +83,8 @@ export function stampSvg(site, state = "none", size = 96) {
     <g transform="rotate(${state === "done" ? rot : 0} 50 50)">
     <rect x="6" y="6" width="88" height="88" rx="8" fill="${red}" stroke="${state === "done" ? "var(--son-600)" : ink}" stroke-width="3"${dash}/>
     <rect x="12" y="12" width="76" height="76" rx="4" fill="none" stroke="${ink}" stroke-width="1.5" opacity=".8"/>
-    ${lines.map((l, i) => `<text x="50" y="${(lines.length === 1 ? 52 : 44 + i * 18)}" text-anchor="middle" font-family="Alegreya, serif" font-weight="800" font-size="${fs}" fill="${ink}">${esc(l)}</text>`).join("")}
-    <text x="50" y="80" text-anchor="middle" font-family="Alegreya, serif" font-weight="700" font-size="11" fill="${ink}" opacity=".9">${esc(site.era?.year ?? "")}</text>
+    ${lines.map((l, i) => `<text x="50" y="${(lines.length === 1 ? 52 : 44 + i * 18)}" text-anchor="middle" font-family="'Be Vietnam Pro', Arial, sans-serif" font-weight="700" font-size="${fs}" fill="${ink}">${esc(l)}</text>`).join("")}
+    <text x="50" y="80" text-anchor="middle" font-family="'Be Vietnam Pro', Arial, sans-serif" font-weight="600" font-size="11" fill="${ink}" opacity=".9">${esc(site.era?.year ?? "")}</text>
     </g></svg>`;
 }
 export const stampState = (id) => (progress.stamped[id] ? "done" : progress.arrived[id] || progress.quiz[id] ? "half" : "none");
@@ -152,3 +152,42 @@ export function download(name, text, type = "application/json") {
 }
 export const rankLabel = (r) => ({ "dac-biet": t("rankDB"), "quoc-gia": t("rankQG"), unesco: t("rankUnesco"), pvt: t("rankPVT"), tinh: t("rankTinh") }[r] || "");
 export const fmtDate = (d) => d.toLocaleDateString(settings.lang === "vi" ? "vi-VN" : settings.lang === "ko" ? "ko-KR" : "en-GB", { weekday: "short", day: "numeric", month: "numeric", year: "numeric" });
+
+// Nón quai thao nhìn chính diện (v3.3): ảnh nằm trong lòng nón, vành rơm có vòng và nan, hai quai hồng điều có tua.
+export function nonSvg(img) {
+  const C = 200, R0 = 150, R1 = 192;
+  let ribs = "", rings = "";
+  for (let i = 0; i < 72; i++) {
+    const a = (i / 72) * Math.PI * 2;
+    ribs += `M${(C + R0 * Math.cos(a)).toFixed(1)} ${(C + R0 * Math.sin(a)).toFixed(1)}L${(C + R1 * Math.cos(a)).toFixed(1)} ${(C + R1 * Math.sin(a)).toFixed(1)}`;
+  }
+  for (let r = R0 + 6; r < R1; r += 6) rings += `<circle cx="${C}" cy="${C}" r="${r}"/>`;
+  const quai = (side) => {
+    const sx = side < 0 ? 119 : 281, ex = side < 0 ? 176 : 224;
+    const c1 = side < 0 ? "126 420 160 440" : "274 420 240 440";
+    let tua = "";
+    for (let k = 0; k < 13; k++) { const dx = (k - 6) * 2.2; tua += `M${ex} 466q${(dx * 0.35).toFixed(1)} 16 ${dx.toFixed(1)} 30`; }
+    return `<g class="tua ${side < 0 ? "l" : "r"}"><path d="M${sx} 372C${c1} ${ex} 460" fill="none" stroke="#c22d5b" stroke-width="10" stroke-linecap="round"/>
+      <path d="${tua}" fill="none" stroke="#c22d5b" stroke-width="1.6" stroke-linecap="round"/><circle cx="${ex}" cy="464" r="6" fill="#dcb46a" stroke="#9a6f2a" stroke-width="1.5"/></g>`;
+  };
+  return `<svg viewBox="0 0 400 500" width="100%" aria-hidden="true" focusable="false">
+    <defs><clipPath id="nonLong"><circle cx="${C}" cy="${C}" r="${R0}"/></clipPath></defs>
+    ${quai(-1)}${quai(1)}
+    <circle cx="${C}" cy="${C}" r="${R1}" fill="#dcb46a"/>
+    <g fill="none" stroke="#9a6f2a" stroke-width="1" opacity=".55">${rings}</g>
+    <path d="${ribs}" stroke="#9a6f2a" stroke-width=".8" opacity=".38"/>
+    <image href="${img}" x="${C - R0}" y="${C - R0}" width="${2 * R0}" height="${2 * R0}" preserveAspectRatio="xMidYMid slice" clip-path="url(#nonLong)"/>
+    <circle cx="${C}" cy="${C}" r="${R0}" fill="none" stroke="#9a6f2a" stroke-width="3"/>
+    <circle cx="${C}" cy="${C}" r="${R1 - 1}" fill="none" stroke="#7d5820" stroke-width="3.5"/>
+  </svg>`;
+}
+// Cổ áo mớ ba: ba lớp hồng điều, lá mạ, vàng rơm xếp hình chữ V, nối sân khấu tím với nền giấy.
+export function collarSvg() {
+  return `<svg class="collar" width="100%" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path d="M0 0H1000V8L500 40L0 8Z" fill="var(--tim-900)"/>
+    <path d="M0 8L500 40L1000 8V18L500 50L0 18Z" fill="var(--son-600)"/>
+    <path d="M0 18L500 50L1000 18V24L500 56L0 24Z" fill="#4f9a2c"/>
+    <path d="M0 24L500 56L1000 24V28L500 60L0 28Z" fill="var(--rom)"/>
+    <path d="M0 28L500 60L0 60Z M1000 28L500 60L1000 60Z" fill="var(--giay-100)"/>
+  </svg>`;
+}

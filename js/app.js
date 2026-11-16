@@ -61,10 +61,43 @@ const routes = [
 const navOf = (h) => (h.startsWith("#/map") ? "map" : h.startsWith("#/route") ? "routes" : h.startsWith("#/passport") ? "passport"
   : /^#\/(more|settings|about|qr|teacher|timeline|festivals|food|plan|class)/.test(h) ? "more" : "home");
 
+// ---------- Nút quay lại (v3.3): có ở mọi trang trừ trang chủ ----------
+// Nhớ các trang đã đi qua trong phiên; nếu người dùng mở thẳng một trang (mã QR, đường dẫn), nút đưa về trang "cha".
+const trail = [];
+function parentOf(h) {
+  let m;
+  if ((m = h.match(/^#\/stop\/([\w-]+?)(\?qr)?$/))) { const id = findStop(m[1]); return id ? `#/site/${id}` : "#/"; }
+  if ((m = h.match(/^#\/quiz\/([\w-]+)$/))) return `#/site/${m[1]}`;
+  if ((m = h.match(/^#\/site\/([\w-]+)\/\w+$/))) return `#/site/${m[1]}`;
+  if ((m = h.match(/^#\/site\/([\w-]+)$/))) { const s = D.byId[m[1]]; return s?.route && D.routes[s.route] ? `#/route/${s.route}` : "#/"; }
+  if (/^#\/route\//.test(h)) return "#/routes";
+  if (/^#\/qr\/[\w-]+$/.test(h)) return "#/qr";
+  if (/^#\/(settings|about|teacher)$/.test(h)) return "#/more";
+  return "#/";
+}
+function trackTrail(h) {
+  if (trail.length > 1 && trail[trail.length - 2] === h) trail.pop(); // người dùng vừa lùi lại
+  else if (trail[trail.length - 1] !== h) trail.push(h);
+  if (trail.length > 60) trail.splice(0, trail.length - 60);
+}
+const isHome = (h) => /^#?\/?$/.test(h);
+function drawBack(h) {
+  const b = document.getElementById("backBtn");
+  if (!b) return;
+  b.hidden = isHome(h);
+  document.body.classList.toggle("has-back", !isHome(h));
+}
+document.getElementById("backBtn")?.addEventListener("click", () => {
+  const h = location.hash || "#/";
+  if (trail.length > 1) history.back();
+  else { trail.length = 0; location.replace(parentOf(h)); } // thay trang hiện tại bằng trang cha, tránh vòng lặp khi bấm tiếp
+});
+
 let cleanup = null;
 export function onLeave(fn) { cleanup = fn; }
 async function render() {
   const h = location.hash || "#/";
+  trackTrail(h); drawBack(h);
   if (cleanup) { try { cleanup(); } catch { /* bỏ qua */ } cleanup = null; }
   document.querySelectorAll(".nav a").forEach((a) => a.setAttribute("aria-current", a.dataset.nav === navOf(h) ? "page" : "false"));
   for (const [re, fn] of routes) {
@@ -92,6 +125,7 @@ function applySettings() {
   document.documentElement.dataset.theme = settings.theme;
   document.documentElement.dataset.size = settings.size;
   document.getElementById("langBtn").textContent = LANGS.find((l) => l.id === settings.lang).label;
+  document.getElementById("backBtn")?.setAttribute("aria-label", t("back"));
   document.querySelector(".brand b").textContent = t("appName");
   document.querySelector(".brand small").textContent = t("tagline");
   const labels = { home: "navHome", map: "navMap", routes: "navRoutes", passport: "navPassport", more: "navMore" };

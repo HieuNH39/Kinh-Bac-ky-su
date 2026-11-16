@@ -9,7 +9,7 @@ export const UI = {
   vi: {
     appName: "Kinh Bắc Ký Sự", tagline: "Thuyết minh di sản xứ Kinh Bắc",
     navHome: "Trang chủ", navMap: "Bản đồ", navRoutes: "Tuyến", navPassport: "Hộ chiếu", navMore: "Thêm",
-    heroLabel: "31 di tích · 8 tuyến", heroTitle: "Nghe di tích kể chuyện",
+    heroLabel: "31 di tích, 8 tuyến tham quan", heroLyric: "Miếng trầu là đầu câu chuyện", heroPhoto: "Ảnh: Chrisvomberg, CC BY-SA 3.0", heroTitle: "Nghe di tích kể chuyện",
     heroText: "Đến nơi, ứng dụng tự nhận ra và mở lời thuyết minh. Không cần mạng sau khi đã tải về.",
     startGps: "Bật định vị", gpsOn: "Đang định vị", gpsOff: "Định vị đang tắt",
     nearest: "Gần bạn nhất", nearHere: "Bạn đang ở đây", awayKm: (d) => `cách ${d}`,
@@ -61,7 +61,7 @@ export const UI = {
   en: {
     appName: "Kinh Bắc Chronicles", tagline: "Heritage audio guide to Kinh Bắc",
     navHome: "Home", navMap: "Map", navRoutes: "Routes", navPassport: "Passport", navMore: "More",
-    heroLabel: "31 sites · 8 routes", heroTitle: "Let the heritage tell its story",
+    heroLabel: "31 sites, 8 routes", heroLyric: "A betel quid opens every conversation", heroPhoto: "Photo: Chrisvomberg, CC BY-SA 3.0", heroTitle: "Let the heritage tell its story",
     heroText: "Arrive and the app recognises the site and starts the guide. Works offline once downloaded.",
     startGps: "Turn on location", gpsOn: "Locating", gpsOff: "Location off",
     nearest: "Nearest to you", nearHere: "You are here", awayKm: (d) => `${d} away`,
@@ -113,7 +113,7 @@ export const UI = {
   ko: {
     appName: "낀박 기행", tagline: "낀박 문화유산 오디오 가이드",
     navHome: "홈", navMap: "지도", navRoutes: "코스", navPassport: "여권", navMore: "더보기",
-    heroLabel: "유적 31곳 · 코스 8개", heroTitle: "유적이 들려주는 이야기",
+    heroLabel: "유적 31곳, 코스 8개", heroLyric: "구장 한 쌈이 이야기를 엽니다", heroPhoto: "사진: Chrisvomberg, CC BY-SA 3.0", heroTitle: "유적이 들려주는 이야기",
     heroText: "도착하면 앱이 유적을 인식하고 해설을 시작합니다. 내려받은 뒤에는 오프라인으로도 사용할 수 있습니다.",
     startGps: "위치 켜기", gpsOn: "위치 확인 중", gpsOff: "위치 꺼짐",
     nearest: "가장 가까운 곳", nearHere: "현재 위치", awayKm: (d) => `${d} 거리`,

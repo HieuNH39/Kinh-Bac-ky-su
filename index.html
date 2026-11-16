@@ -5,18 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kinh Bắc Ký Sự – Thuyết minh di sản xứ Kinh Bắc</title>
 <meta name="description" content="Ứng dụng thuyết minh tự động theo vị trí cho 31 di tích xứ Kinh Bắc: giọng đọc, ảnh, đố vui, hộ chiếu di sản, lịch trình, ẩm thực. Dùng được khi không có mạng.">
-<meta name="theme-color" content="#a8322a">
+<meta name="theme-color" content="#2b1a3d">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="img/brand/icon-app.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="preload" href="fonts/alegreya-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/cormorant-garamond-vietnamese-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/be-vietnam-pro-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="img/brand/non-anh.webp" as="image">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="#/"><img src="img/brand/logo-dau-son.svg" alt=""><span><b>Kinh Bắc Ký Sự</b><small>Thuyết minh di sản xứ Kinh Bắc</small></span></a>
+  <button class="icon-btn back-btn" id="backBtn" type="button" aria-label="Quay lại" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.4 5.4 14 4l-8 8 8 8 1.4-1.4L8.8 12z"/></svg></button>
+  <a class="brand" href="#/"><img src="img/brand/non-quai-thao.svg" alt=""><span><b>Kinh Bắc Ký Sự</b><small>Thuyết minh di sản xứ Kinh Bắc</small></span></a>
   <span class="spacer"></span>
   <button class="icon-btn lang-btn" id="langBtn" type="button" aria-label="Ngôn ngữ / Language">VI</button>
 </header>

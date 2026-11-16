@@ -1,7 +1,7 @@
 // Các trang chính: trang chủ, bản đồ, tuyến, di tích, điểm dừng.
 import { D, loadSite, audioItem, onLeave, findStop } from "./app.js";
 import { settings, progress, Geo, Player, logEvent, markArrived, store, nextFest, PASS } from "./core.js";
-import { esc, t, L, icon, gm, gmTerms, distLabel, stampSvg, stampState, gallery, wireGallery, toast, rankLabel, fmtDate } from "./ui.js";
+import { esc, t, L, icon, gm, gmTerms, distLabel, stampSvg, stampState, gallery, wireGallery, toast, rankLabel, fmtDate, nonSvg, collarSvg } from "./ui.js";
 
 let post = [];
 export function afterRender() { const f = post; post = []; f.forEach((fn) => fn()); }
@@ -35,7 +35,8 @@ export function home() {
   const near = p ? [...sites].sort((a, b) => Geo.distance(p, a.gps) - Geo.distance(p, b.gps))[0] : null;
   const upcoming = D.index.sites.filter((s) => s.festival).map((s) => ({ s, d: nextFest(s.festival) }))
     .filter((x) => x.d).sort((a, b) => a.d - b.d)[0];
-  const heroImg = D.byId["phat-tich"]?.cover?.mid || D.byId["phat-tich"]?.cover?.src || coverOf(sites[0]);
+  // Ảnh trong lòng nón: một buổi trình diễn quan họ (Chrisvomberg, Wikimedia Commons, CC BY-SA 3.0)
+  const heroImg = "img/brand/non-anh.webp"; // cắt vuông, 600 px, từ media/lang-diem/ld-quan-ho-trinh-dien.webp
   const quick = [
     ["#/routes", "route", "quickRoutes"], ["#/plan", "clock", "quickPlan"], ["#/food", "food", "quickFood"], ["#/festivals", "lantern", "quickFest"],
     ["#/timeline", "timeline", "quickTimeline"], ["#/passport", "passport", "quickPassport"], ["#/class", "class", "quickClass"], ["#/qr", "qr", "quickQr"],
@@ -45,18 +46,24 @@ export function home() {
   after(() => {
     document.getElementById("gpsBtn")?.addEventListener("click", () => { store.set("gpsWanted", true); Geo.start(); toast(t("gpsOn")); });
   });
-  return `<div class="wrap">
-    <section class="hero">
-      <img class="bg" src="${esc(heroImg)}" alt="" fetchpriority="high">
-      <img class="seal" src="img/brand/logo-dau-son.svg" alt="Kinh Bắc">
-      <div class="inner">
-        <span class="label">${t("heroLabel")}</span>
+  return `<section class="stage">
+    <div class="stage-in">
+      <figure class="non" style="margin-top:0;margin-bottom:0">${nonSvg(heroImg)}</figure>
+      <div class="stage-text">
+        <p class="loi">${t("heroLyric")}</p>
         <h1>${t("heroTitle")}</h1>
-        <p>${t("heroText")}</p>
+        <p class="moi">${t("heroText")}</p>
+        <div class="row">
         ${Geo.watching || settings.sim ? `<span class="tag cham">${icon("gps")} ${t("gpsOn")}${Geo.accuracy ? ` ±${Math.round(Geo.accuracy)} m` : ""}</span>`
           : `<button class="btn primary" id="gpsBtn" type="button">${icon("gps")}${t("startGps")}</button>`}
+          <a class="btn on-tim" href="#/routes">${t("quickRoutes")}</a>
+        </div>
+        <p class="dem">${t("heroLabel")} · <a href="https://commons.wikimedia.org/wiki/File:Quan_Ho-Ensemble.JPG" target="_blank" rel="noopener" style="color:inherit">${t("heroPhoto")}</a></p>
       </div>
-    </section>
+    </div>
+    ${collarSvg()}
+  </section>
+  <div class="wrap">
     ${near ? `<div class="section"><h2>${Geo.distance(p, near.gps) <= (near.radius || 300) ? t("nearHere") : t("nearest")}</h2></div>
       <a class="card near" href="#/site/${near.id}" style="text-decoration:none;color:inherit"><img src="${esc(coverOf(near))}" alt="">
         <div><h3 style="margin:0">${esc(L(near.name))}</h3><span class="small muted">${distLabel(near)}</span></div>
@@ -69,7 +76,7 @@ export function home() {
     <div class="hscroll">${D.index.routes.map(routeCard).join("")}</div>
     <div class="section"><h2>${t("allSites")}</h2><a href="#/map">${t("navMap")}</a></div>
     <div class="site-list">${(p ? [...sites].sort((a, b) => Geo.distance(p, a.gps) - Geo.distance(p, b.gps)) : sites).map(siteItem).join("")}</div>
-    <footer class="foot"><img src="img/brand/logo-dau-son.svg" alt=""><p>Kinh Bắc Ký Sự · Heritage Lens · v${esc(D.index.about?.app_version || "")}<br>STEMPETITION 2027 · <a href="#/about">${t("about")}</a></p></footer>
+    <footer class="foot"><img src="img/brand/non-quai-thao.svg" alt=""><p>Kinh Bắc Ký Sự · Heritage Lens · v${esc(D.index.about?.app_version || "")}<br>STEMPETITION 2027 · <a href="#/about">${t("about")}</a></p></footer>
   </div>`;
 }
 function routeCard(r) {
@@ -158,7 +165,7 @@ export function routePage(id) {
   if (!r) throw new Error("route");
   const sites = r.sites.map((x) => D.byId[x]).filter(Boolean);
   const done = sites.filter((s) => progress.stamped[s.id]).length;
-  return `<div class="wrap"><a class="back" href="#/routes">${icon("back")} ${t("routes")}</a>
+  return `<div class="wrap"><a class="crumb" href="#/routes">${t("routes")}</a>
     <div class="card framed"><div class="card-body">
       <div class="row"><span class="tag" style="background:${r.color};color:#fbf7ef">${t("navRoutes")} ${r.num}</span><span class="tag">${t("sites", sites.length)}</span><span class="tag cham">${t("stampsCount", done, sites.length)}</span></div>
       <h1 style="margin:10px 0 6px">${esc(L(r.name))}</h1><p>${esc(L(r.theme))}</p>
@@ -335,7 +342,7 @@ export async function stopPage(stopId, fromQr) {
     if (fromQr && item && !Player.isPlaying(st.id)) Player.play(item, "qr");
   });
   return `<div class="wrap">
-    <a class="back" href="#/site/${siteId}">${icon("back")} ${esc(L(s.name))}</a>
+    <a class="crumb" href="#/site/${siteId}">${esc(L(s.name))}</a>
     <span class="label">${t("stopOf", i, s.stops.length - 1)}</span>
     <h1 style="margin-top:6px">${esc(L(st.title))}</h1>
     ${st.where ? `<div class="small muted">${icon("pin", "")} ${esc(L(st.where))}</div>` : ""}
