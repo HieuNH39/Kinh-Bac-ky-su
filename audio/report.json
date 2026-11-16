@@ -1,0 +1,358 @@
+{
+ "DK-00-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.042
+ },
+ "DK-01-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.084
+ },
+ "DK-02-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.061
+ },
+ "DK-03-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.028
+ },
+ "DK-04-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.024
+ },
+ "DK-05-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.034
+ },
+ "DX-00-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.027
+ },
+ "DX-01-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.041
+ },
+ "DX-02-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.085
+ },
+ "DX-03-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.026
+ },
+ "DX-04-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.023
+ },
+ "DX-05-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.041
+ },
+ "HL-00-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.017
+ },
+ "HL-01-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.008
+ },
+ "HL-02-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.019
+ },
+ "HL-03-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.039
+ },
+ "HL-04-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [
+   {
+    "i": 4,
+    "text": "Dân ca quan họ Bắc Ninh đã được U nét xcô ghi danh là di sản văn hóa phi vật thể đại diện của nhân loại năm hai nghìn không trăm linh chín.",
+    "missing": [
+     "xcô ghi danh"
+    ]
+   }
+  ],
+  "wer": 0.042
+ },
+ "HL-05-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.018
+ },
+ "LDH-00-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.006
+ },
+ "LDH-01-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.026
+ },
+ "LDH-02-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.039
+ },
+ "LDH-03-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.063
+ },
+ "LDH-04-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.025
+ },
+ "LH-00-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.022
+ },
+ "LH-01-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.03
+ },
+ "LH-02-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.035
+ },
+ "LH-03-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.036
+ },
+ "LH-04-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.014
+ },
+ "LVT-00-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.033
+ },
+ "LVT-01-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.006
+ },
+ "LVT-02-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.006
+ },
+ "LVT-03-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.026
+ },
+ "LVT-04-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.035
+ },
+ "LVT-05-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.027
+ },
+ "ND-00-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.052
+ },
+ "ND-01-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.044
+ },
+ "ND-02-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.043
+ },
+ "ND-03-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.025
+ },
+ "ND-04-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.03
+ },
+ "ND-05-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.049
+ },
+ "PL-00-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.031
+ },
+ "PL-01-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.024
+ },
+ "PL-02-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.015
+ },
+ "PL-03-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.039
+ },
+ "PL-04-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.047
+ },
+ "PL-05-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.065
+ },
+ "PLO-00-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.031
+ },
+ "PLO-01-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.046
+ },
+ "PLO-02-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.026
+ },
+ "PLO-03-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.048
+ },
+ "PLO-04-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.037
+ },
+ "PLO-05-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.056
+ },
+ "TB-00-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.021
+ },
+ "TB-01-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.015
+ },
+ "TB-02-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.076
+ },
+ "TB-03-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.008
+ },
+ "TB-04-vi": {
+  "state": "xong",
+  "voice": "Phạm Tuyên",
+  "flags": [],
+  "wer": 0.0
+ },
+ "TB-05-vi": {
+  "state": "xong",
+  "voice": "Quỳnh Anh",
+  "flags": [],
+  "wer": 0.0
+ }
+}

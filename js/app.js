@@ -141,27 +141,30 @@ export function showBanner(text, actions) {
 function checkNearby() {
   const p = Geo.position;
   if (!p || !D.index) return;
-  for (const s of D.index.sites) {
-    const d = Geo.distance(p, s.gps);
-    if (d <= (s.radius || 300) + Math.min(Geo.accuracy || 0, 100)) {
-      if (!progress.arrived[s.id] || !announced.has(s.id)) {
-        const stamped = markArrived(s.id, settings.sim ? "sim" : "gps", Geo.accuracy);
-        if (stamped) toast(t("stampEarned"));
-      }
-      if (announced.has(s.id)) continue;
-      announced.add(s.id);
-      const go = async () => {
-        const site = await loadSite(s.id);
-        const it = audioItem(site, site.stops[0]);
-        location.hash = `#/site/${s.id}`;
-        if (it) Player.play(it, settings.sim ? "sim" : "gps");
-      };
-      if (settings.autoplay && userTouched) { go(); toast(t("arrivedBanner", L(s.name))); }
-      else showBanner(t("arrivedBanner", L(s.name)), [{ label: t("listenNow"), fn: go }, { label: t("later") }]);
-      if ("vibrate" in navigator) navigator.vibrate(120);
-      break;
-    }
+  // v3.2: 31 di tích, có nơi chỉ cách nhau vài trăm mét (Đồng Kỵ – Phù Khê). Khi sai số GPS làm hai vùng chồng nhau,
+  // chọn di tích "gần nhất theo bán kính" (tỉ lệ khoảng cách / bán kính nhỏ nhất) thay vì di tích đứng trước trong danh sách.
+  const slack = Math.min(Geo.accuracy || 0, 100);
+  let s = null, best = Infinity;
+  for (const x of D.index.sites) {
+    const r = x.radius || 300, d = Geo.distance(p, x.gps);
+    if (d <= r + slack && d / r < best) { s = x; best = d / r; }
   }
+  if (!s) return;
+  if (!progress.arrived[s.id] || !announced.has(s.id)) {
+    const stamped = markArrived(s.id, settings.sim ? "sim" : "gps", Geo.accuracy);
+    if (stamped) toast(t("stampEarned"));
+  }
+  if (announced.has(s.id)) return;
+  announced.add(s.id);
+  const go = async () => {
+    const site = await loadSite(s.id);
+    const it = audioItem(site, site.stops[0]);
+    location.hash = `#/site/${s.id}`;
+    if (it) Player.play(it, settings.sim ? "sim" : "gps");
+  };
+  if (settings.autoplay && userTouched) { go(); toast(t("arrivedBanner", L(s.name))); }
+  else showBanner(t("arrivedBanner", L(s.name)), [{ label: t("listenNow"), fn: go }, { label: t("later") }]);
+  if ("vibrate" in navigator) navigator.vibrate(120);
 }
 let userTouched = false;
 addEventListener("pointerdown", () => { userTouched = true; }, { once: true, capture: true });

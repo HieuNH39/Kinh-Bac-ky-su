@@ -150,5 +150,5 @@ export function download(name, text, type = "application/json") {
   a.download = name; document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
-export const rankLabel = (r) => ({ "dac-biet": t("rankDB"), "quoc-gia": t("rankQG"), unesco: t("rankUnesco"), pvt: t("rankPVT") }[r] || "");
+export const rankLabel = (r) => ({ "dac-biet": t("rankDB"), "quoc-gia": t("rankQG"), unesco: t("rankUnesco"), pvt: t("rankPVT"), tinh: t("rankTinh") }[r] || "");
 export const fmtDate = (d) => d.toLocaleDateString(settings.lang === "vi" ? "vi-VN" : settings.lang === "ko" ? "ko-KR" : "en-GB", { weekday: "short", day: "numeric", month: "numeric", year: "numeric" });
