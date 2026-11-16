@@ -1,7 +1,7 @@
 // Các trang chính: trang chủ, bản đồ, tuyến, di tích, điểm dừng.
 import { D, loadSite, audioItem, onLeave, findStop } from "./app.js";
 import { settings, progress, Geo, Player, logEvent, markArrived, store, nextFest, PASS } from "./core.js";
-import { esc, t, L, icon, gm, gmTerms, distLabel, stampSvg, stampState, gallery, wireGallery, toast, rankLabel, fmtDate, nonSvg, collarSvg } from "./ui.js";
+import { esc, t, L, icon, gm, gmTerms, distLabel, stampSvg, stampState, gallery, wireGallery, toast, rankLabel, fmtDate, nonSvg } from "./ui.js";
 
 let post = [];
 export function afterRender() { const f = post; post = []; f.forEach((fn) => fn()); }
@@ -48,7 +48,6 @@ export function home() {
   });
   return `<section class="stage">
     <div class="stage-in">
-      <figure class="non" style="margin-top:0;margin-bottom:0">${nonSvg(heroImg)}</figure>
       <div class="stage-text">
         <p class="loi">${t("heroLyric")}</p>
         <h1>${t("heroTitle")}</h1>
@@ -56,12 +55,11 @@ export function home() {
         <div class="row">
         ${Geo.watching || settings.sim ? `<span class="tag cham">${icon("gps")} ${t("gpsOn")}${Geo.accuracy ? ` ±${Math.round(Geo.accuracy)} m` : ""}</span>`
           : `<button class="btn primary" id="gpsBtn" type="button">${icon("gps")}${t("startGps")}</button>`}
-          <a class="btn on-tim" href="#/routes">${t("quickRoutes")}</a>
+          <a class="btn kinh" href="#/routes">${t("quickRoutes")}</a>
         </div>
-        <p class="dem">${t("heroLabel")} · <a href="https://commons.wikimedia.org/wiki/File:Quan_Ho-Ensemble.JPG" target="_blank" rel="noopener" style="color:inherit">${t("heroPhoto")}</a></p>
       </div>
+      <figure class="non" style="margin-bottom:0">${nonSvg(heroImg)}<figcaption class="dem" style="text-align:center">${t("heroLabel")} · <a href="https://commons.wikimedia.org/wiki/File:Quan_Ho-Ensemble.JPG" target="_blank" rel="noopener">${t("heroPhoto")}</a></figcaption></figure>
     </div>
-    ${collarSvg()}
   </section>
   <div class="wrap">
     ${near ? `<div class="section"><h2>${Geo.distance(p, near.gps) <= (near.radius || 300) ? t("nearHere") : t("nearest")}</h2></div>
@@ -76,7 +74,7 @@ export function home() {
     <div class="hscroll">${D.index.routes.map(routeCard).join("")}</div>
     <div class="section"><h2>${t("allSites")}</h2><a href="#/map">${t("navMap")}</a></div>
     <div class="site-list">${(p ? [...sites].sort((a, b) => Geo.distance(p, a.gps) - Geo.distance(p, b.gps)) : sites).map(siteItem).join("")}</div>
-    <footer class="foot"><img src="img/brand/non-quai-thao.svg" alt=""><p>Kinh Bắc Ký Sự · Heritage Lens · v${esc(D.index.about?.app_version || "")}<br>STEMPETITION 2027 · <a href="#/about">${t("about")}</a></p></footer>
+    <footer class="foot"><img src="img/brand/logo-dau-son.svg" alt=""><p>Kinh Bắc Ký Sự · Heritage Lens · v${esc(D.index.about?.app_version || "")}<br>STEMPETITION 2027 · <a href="#/about">${t("about")}</a></p></footer>
   </div>`;
 }
 function routeCard(r) {
@@ -175,10 +173,31 @@ export function routePage(id) {
       <a class="btn" href="#/class/${r.id}">${icon("class")}${t("classMode")}</a>
       <a class="btn" href="#/map?route=${r.id}">${icon("map")}${t("navMap")}</a>
       <a class="btn" href="${gm.route(sites.map((s) => s.gps))}" target="_blank" rel="noopener">${icon("dir")}${t("openRouteGm")}</a>
+      <a class="btn" href="#/route/${r.id}" data-jump="routeFood">${icon("food")}${t("routeFood")}</a>
     </div>
     <ol class="stack" style="list-style:none;padding:0;margin:0">${sites.map((s, i) => `<li>
       ${i ? `<div class="tiny muted" style="padding:2px 0 8px 44px">↓ ${Geo.fmt(Geo.distance(sites[i - 1].gps, s.gps) * 1.3)}</div>` : ""}
-      ${siteItem(s)}</li>`).join("")}</ol></div>`;
+      ${siteItem(s)}</li>`).join("")}</ol>
+    ${routeFood(sites)}</div>`;
+}
+// v3.4: gợi ý ăn gì, mua gì làm quà theo tuyến – gom đặc sản của các di tích trong tuyến, giữ thứ tự xuất hiện
+function routeFood(sites) {
+  const near = {};
+  sites.forEach((s) => (s.specialties || []).forEach((f) => { if (D.food[f]) (near[f] ||= []).push(s); }));
+  const ids = Object.keys(near);
+  if (!ids.length) return "";
+  after(() => {
+    document.querySelector("[data-jump=routeFood]")?.addEventListener("click", (e) => { e.preventDefault(); document.getElementById("routeFood")?.scrollIntoView({ behavior: "smooth" }); });
+  });
+  const card = (id) => foodCard(D.food[id]).replace(/<\/div><\/div>$/, `<div class="tiny muted" style="margin-top:8px">${t("nearSites")}: ${near[id].map((s) => `<a href="#/site/${s.id}/travel">${esc(L(s.name))}</a>`).join(", ")}</div></div></div>`);
+  const eat = ids.filter((id) => D.food[id].kind === "mon"), gift = ids.filter((id) => D.food[id].kind !== "mon");
+  return `<section id="routeFood" style="scroll-margin-top:80px">
+    <div class="section"><h2>${t("routeFood")}</h2></div>
+    <p class="muted small" style="margin-top:-4px">${t("routeFoodText")}</p>
+    ${eat.length ? `<h3 style="margin-top:16px">${t("eatHere")}</h3><div class="food">${eat.map(card).join("")}</div>` : ""}
+    ${gift.length ? `<h3 style="margin-top:18px">${t("buyGift")}</h3><div class="food">${gift.map(card).join("")}</div>` : ""}
+    <p class="small" style="margin-top:14px"><a href="#/food">${t("food")}</a></p>
+  </section>`;
 }
 
 // ---------- Di tích ----------
@@ -221,6 +240,7 @@ export async function sitePage(id, tab = "tour") {
       <a class="btn" href="${gm.dir(s.gps)}" target="_blank" rel="noopener">${icon("dir")}${t("directions")}</a>
       ${s.quiz?.length ? `<a class="btn" href="#/quiz/${id}">${icon("quiz")}${t("quizN", s.quiz.length)}${q ? ` · ${q.score}/${q.total}` : ""}</a>` : ""}
       <button class="btn" id="dlBtn" type="button">${icon("download")}<span>${t("download")}</span></button>
+      <button class="btn" type="button" data-share="#/site/${id}" data-share-title="${esc(L(s.name))}">${icon("share")}${t("share")}</button>
     </div>
     <div class="tabs" role="tablist">
       <button role="tab" data-tab="tour">${t("tabTour")}</button><button role="tab" data-tab="travel">${t("tabTravel")}</button><button role="tab" data-tab="docs">${t("tabDocs")}</button>
@@ -350,7 +370,8 @@ export async function stopPage(stopId, fromQr) {
     <div class="card listen-box">
       ${item ? `<div class="listen-main"><button class="play-big${Player.isPlaying(st.id) ? " is-on" : ""}" id="playBtn" data-play="${st.id}" type="button" aria-label="${t("listen")}">${icon(Player.isPlaying(st.id) ? "pause" : "play")}</button>
         <div style="flex:1"><b>${esc(L(st.title))}</b><div class="progress" style="margin-top:8px"><i data-prog="${st.id}"></i></div>
-        <div class="tiny muted" style="margin-top:6px">${t("speed")}: ${String(settings.speed).replace(".", ",")}× · ${st.voice === "nam" ? "♂" : "♀"} ${esc(D.index.voice?.[st.voice] || "")}</div></div></div>`
+        <div class="tiny muted" style="margin-top:6px">${t("speed")}: ${String(settings.speed).replace(".", ",")}× · ${st.voice === "nam" ? "♂" : "♀"} ${esc(D.index.voice?.[st.voice] || "")}</div></div>
+        <button class="icon-btn" type="button" data-share="#/stop/${st.id}" data-share-title="${esc(L(st.title))} – ${esc(L(s.name))}" aria-label="${t("share")}">${icon("share")}</button></div>`
         : `<p class="small muted" style="margin:0">${t("noAudio")}</p>`}
     </div>
     ${settings.lang === "ko" && !st.text.ko ? `<p class="note" style="margin-top:12px">${t("koNote")}</p>` : ""}

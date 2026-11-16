@@ -61,7 +61,7 @@ export function passport() {
   const done = sites.filter((s) => progress.stamped[s.id]).length;
   later(() => document.getElementById("certBtn")?.addEventListener("click", makeCert));
   return `<div class="wrap" style="padding-top:14px">
-    <div class="passport-head"><img src="img/brand/non-quai-thao.svg" alt="" style="width:56px;margin:0 auto 8px;border:2px solid #fbf7ef;border-radius:8px">
+    <div class="passport-head"><img src="img/brand/logo-dau-son.svg" alt="" style="width:56px;margin:0 auto 8px;border:2px solid #fbf7ef;border-radius:8px">
       <h1>${t("passport")}</h1><p style="margin:0">${t("passportText")}</p><p style="margin:8px 0 0;font:800 1.4rem var(--display)">${t("stampsCount", done, sites.length)}</p></div>
     ${D.index.routes.map((r) => `<div class="section"><h2>${r.num}. ${esc(L(r.name))}</h2></div>
       <div class="stamps">${r.sites.map((id) => D.byId[id]).filter(Boolean).map((s) => {
@@ -84,25 +84,34 @@ async function makeCert() {
   c.width = W; c.height = H;
   const g = c.getContext("2d");
   await document.fonts.ready;
-  g.fillStyle = "#fffdfb"; g.fillRect(0, 0, W, H);
-  g.strokeStyle = "#2b1a3d"; g.lineWidth = 10; g.strokeRect(30, 30, W - 60, H - 60);
-  g.strokeStyle = "#dcb46a"; g.lineWidth = 3; g.strokeRect(48, 48, W - 96, H - 96);
-  const logo = new Image(); logo.src = "img/brand/non-quai-thao.svg"; await logo.decode().catch(() => {});
-  g.drawImage(logo, W / 2 - 55, 80, 110, 110);
-  g.fillStyle = "#24172f"; g.textAlign = "center";
+  g.fillStyle = "#f7f2e9"; g.fillRect(0, 0, W, H);
+  // Viền hoa văn kiểu tranh Đông Hồ: cắt 9 ô từ dh-vien.svg (góc 20px, cạnh lặp lại)
+  const vien = new Image(); vien.src = "img/brand/dh-vien.svg"; await vien.decode().catch(() => {});
+  const X = 30, Y = 30, FW = W - 60, FH = H - 60, B = 40;
+  if (vien.naturalWidth) {
+    g.drawImage(vien, 0, 0, 20, 20, X, Y, B, B); g.drawImage(vien, 40, 0, 20, 20, X + FW - B, Y, B, B);
+    g.drawImage(vien, 0, 40, 20, 20, X, Y + FH - B, B, B); g.drawImage(vien, 40, 40, 20, 20, X + FW - B, Y + FH - B, B, B);
+    const nx = Math.round((FW - 2 * B) / B), sx = (FW - 2 * B) / nx, ny = Math.round((FH - 2 * B) / B), sy = (FH - 2 * B) / ny;
+    for (let i = 0; i < nx; i++) { g.drawImage(vien, 20, 0, 20, 20, X + B + i * sx, Y, sx, B); g.drawImage(vien, 20, 40, 20, 20, X + B + i * sx, Y + FH - B, sx, B); }
+    for (let i = 0; i < ny; i++) { g.drawImage(vien, 0, 20, 20, 20, X, Y + B + i * sy, B, sy); g.drawImage(vien, 40, 20, 20, 20, X + FW - B, Y + B + i * sy, B, sy); }
+  }
+  g.strokeStyle = "#1e1b18"; g.lineWidth = 4; g.strokeRect(X, Y, FW, FH);
+  const logo = new Image(); logo.src = "img/brand/logo-dau-son.svg"; await logo.decode().catch(() => {});
+  if (logo.naturalWidth) g.drawImage(logo, W / 2 - 55, 80, 110, 110);
+  g.fillStyle = "#1e1b18"; g.textAlign = "center";
   g.font = "700 60px 'Cormorant Garamond', serif"; g.fillText(t("certificate").toUpperCase(), W / 2, 260);
   g.font = "500 28px 'Be Vietnam Pro', sans-serif"; g.fillText(t("passport"), W / 2, 310);
-  g.font = "italic 600 56px 'Cormorant Garamond', serif"; g.fillStyle = "#c22d5b"; g.fillText(name || "…", W / 2, 400);
-  g.fillStyle = "#24172f"; g.font = "500 28px 'Be Vietnam Pro', sans-serif";
+  g.font = "italic 600 56px 'Cormorant Garamond', serif"; g.fillStyle = "#b93a26"; g.fillText(name || "…", W / 2, 400);
+  g.fillStyle = "#1e1b18"; g.font = "500 28px 'Be Vietnam Pro', sans-serif";
   g.fillText(t("stampsCount", got.length, sites.length), W / 2, 455);
   const per = Math.min(got.length, 10), sz = 80, gap = 16, x0 = W / 2 - (per * (sz + gap) - gap) / 2;
   for (let i = 0; i < got.length && i < 20; i++) {
     const img = new Image();
-    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(stampSvg(got[i], "done", sz).replace(/var\(--son-600\)/g, "#c22d5b"));
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(stampSvg(got[i], "done", sz).replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ').replace(/var\(--son-600\)/g, "#b93a26"));
     await img.decode().catch(() => {});
-    g.drawImage(img, x0 + (i % 10) * (sz + gap), 490 + Math.floor(i / 10) * (sz + gap), sz, sz);
+    if (img.naturalWidth) g.drawImage(img, x0 + (i % 10) * (sz + gap), 490 + Math.floor(i / 10) * (sz + gap), sz, sz);
   }
-  g.font = "500 22px 'Be Vietnam Pro', sans-serif"; g.fillStyle = "#5b5148";
+  g.font = "500 22px 'Be Vietnam Pro', sans-serif"; g.fillStyle = "#6e655b";
   g.fillText(`Kinh Bắc Ký Sự · ${new Date().toLocaleDateString("vi-VN")}`, W / 2, H - 90);
   const url = c.toDataURL("image/png");
   document.getElementById("certOut").innerHTML = `<img src="${url}" alt="${t("certificate")}" style="border-radius:8px;box-shadow:var(--bong-1)"><a class="btn" style="margin-top:10px" download="chung-nhan-kinh-bac.png" href="${url}">${icon("download")}${t("shareCert")}</a>`;
@@ -304,7 +313,7 @@ export function about() {
   const a = D.index.about || {};
   const st = D.index.stats || {};
   return `<div class="wrap"><div class="section" style="margin-top:16px"><h2>${t("about")}</h2></div>
-    <div class="card framed"><div class="card-body"><div class="row"><img src="img/brand/non-quai-thao.svg" alt="" style="width:56px;border-radius:8px"><div><h3 style="margin:0">Kinh Bắc Ký Sự</h3><span class="small muted">Heritage Lens · STEMPETITION 2027</span></div></div>
+    <div class="card framed"><div class="card-body"><div class="row"><img src="img/brand/logo-dau-son.svg" alt="" style="width:56px;border-radius:8px"><div><h3 style="margin:0">Kinh Bắc Ký Sự</h3><span class="small muted">Heritage Lens · STEMPETITION 2027</span></div></div>
       <p style="margin-top:12px">${esc(L(a.intro) || "")}</p>
       <p class="small"><b>${st.sites || 0}</b> ${t("allSites").toLowerCase()} · <b>${st.stops || 0}</b> ${t("stops", "").trim()} · <b>${st.photos || 0}</b> ${t("photoBy").toLowerCase()} · <b>${st.quiz || 0}</b> ${t("quiz").toLowerCase()} · <b>${st.sources || 0}</b> ${t("sources").toLowerCase()}</p></div></div>
     <div class="section"><h2>${t("howMade")}</h2></div>

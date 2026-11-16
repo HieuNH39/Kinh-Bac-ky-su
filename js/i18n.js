@@ -9,7 +9,7 @@ export const UI = {
   vi: {
     appName: "Kinh Bắc Ký Sự", tagline: "Thuyết minh di sản xứ Kinh Bắc",
     navHome: "Trang chủ", navMap: "Bản đồ", navRoutes: "Tuyến", navPassport: "Hộ chiếu", navMore: "Thêm",
-    heroLabel: "31 di tích, 8 tuyến tham quan", heroLyric: "Miếng trầu là đầu câu chuyện", heroPhoto: "Ảnh: Chrisvomberg, CC BY-SA 3.0", heroTitle: "Nghe di tích kể chuyện",
+    heroLabel: "31 di tích, 8 tuyến tham quan", heroLyric: "Miếng trầu là đầu câu chuyện", lastStop: "Đây là điểm cuối của di tích", firstStop: "Đây là điểm đầu tiên", mute: "Tắt tiếng / bật tiếng", volume: "Âm lượng", volumeHint: "Trên iPhone, iPad hãy chỉnh bằng nút âm lượng của máy.", shareText: (n) => `Nghe thuyết minh về ${n} trên Kinh Bắc Ký Sự`, linkCopied: "Đã chép đường dẫn, dán vào tin nhắn để gửi.", prevStop: "Điểm trước", back15: "Lùi 15 giây", playPause: "Phát / tạm dừng", fwd15: "Tiến 15 giây", nextStop: "Điểm tiếp theo", speedLabel: "Tốc độ đọc", share: "Chia sẻ", close: "Đóng", routeFood: "Ăn gì, mua gì làm quà", routeFoodText: "Đặc sản quanh các di tích trên tuyến: món nên ăn tại chỗ và quà mang về.", eatHere: "Nên ăn tại chỗ", buyGift: "Mua làm quà", nearSites: "Gần", heroPhoto: "Ảnh: Chrisvomberg, CC BY-SA 3.0", heroTitle: "Nghe di tích kể chuyện",
     heroText: "Đến nơi, ứng dụng tự nhận ra và mở lời thuyết minh. Không cần mạng sau khi đã tải về.",
     startGps: "Bật định vị", gpsOn: "Đang định vị", gpsOff: "Định vị đang tắt",
     nearest: "Gần bạn nhất", nearHere: "Bạn đang ở đây", awayKm: (d) => `cách ${d}`,
@@ -61,7 +61,7 @@ export const UI = {
   en: {
     appName: "Kinh Bắc Chronicles", tagline: "Heritage audio guide to Kinh Bắc",
     navHome: "Home", navMap: "Map", navRoutes: "Routes", navPassport: "Passport", navMore: "More",
-    heroLabel: "31 sites, 8 routes", heroLyric: "A betel quid opens every conversation", heroPhoto: "Photo: Chrisvomberg, CC BY-SA 3.0", heroTitle: "Let the heritage tell its story",
+    heroLabel: "31 sites, 8 routes", heroLyric: "A betel quid opens every conversation", lastStop: "This is the last stop at this site", firstStop: "This is the first stop", mute: "Mute / unmute", volume: "Volume", volumeHint: "On iPhone and iPad, use the device volume buttons.", shareText: (n) => `Listen to the audio guide for ${n} on Kinh Bắc Chronicles`, linkCopied: "Link copied, paste it to share.", prevStop: "Previous stop", back15: "Back 15 seconds", playPause: "Play / pause", fwd15: "Forward 15 seconds", nextStop: "Next stop", speedLabel: "Playback speed", share: "Share", close: "Close", routeFood: "What to eat, what to take home", routeFoodText: "Specialities around the sites on this route: dishes to try there and gifts to take home.", eatHere: "Try there", buyGift: "Take home", nearSites: "Near", heroPhoto: "Photo: Chrisvomberg, CC BY-SA 3.0", heroTitle: "Let the heritage tell its story",
     heroText: "Arrive and the app recognises the site and starts the guide. Works offline once downloaded.",
     startGps: "Turn on location", gpsOn: "Locating", gpsOff: "Location off",
     nearest: "Nearest to you", nearHere: "You are here", awayKm: (d) => `${d} away`,
@@ -113,7 +113,7 @@ export const UI = {
   ko: {
     appName: "낀박 기행", tagline: "낀박 문화유산 오디오 가이드",
     navHome: "홈", navMap: "지도", navRoutes: "코스", navPassport: "여권", navMore: "더보기",
-    heroLabel: "유적 31곳, 코스 8개", heroLyric: "구장 한 쌈이 이야기를 엽니다", heroPhoto: "사진: Chrisvomberg, CC BY-SA 3.0", heroTitle: "유적이 들려주는 이야기",
+    heroLabel: "유적 31곳, 코스 8개", heroLyric: "구장 한 쌈이 이야기를 엽니다", lastStop: "이 유적의 마지막 지점입니다", firstStop: "첫 번째 지점입니다", mute: "음소거 / 해제", volume: "음량", volumeHint: "iPhone·iPad에서는 기기의 음량 버튼을 사용하세요.", shareText: (n) => `낀박 기행에서 ${n} 해설 듣기`, linkCopied: "링크를 복사했습니다. 붙여 넣어 공유하세요.", prevStop: "이전 지점", back15: "15초 뒤로", playPause: "재생 / 일시정지", fwd15: "15초 앞으로", nextStop: "다음 지점", speedLabel: "재생 속도", share: "공유", close: "닫기", routeFood: "먹을거리와 기념품", routeFoodText: "코스 유적 주변의 특산물: 현지에서 맛볼 음식과 가져갈 기념품.", eatHere: "현지에서 맛보기", buyGift: "기념품", nearSites: "가까운 곳", heroPhoto: "사진: Chrisvomberg, CC BY-SA 3.0", heroTitle: "유적이 들려주는 이야기",
     heroText: "도착하면 앱이 유적을 인식하고 해설을 시작합니다. 내려받은 뒤에는 오프라인으로도 사용할 수 있습니다.",
     startGps: "위치 켜기", gpsOn: "위치 확인 중", gpsOff: "위치 꺼짐",
     nearest: "가장 가까운 곳", nearHere: "현재 위치", awayKm: (d) => `${d} 거리`,

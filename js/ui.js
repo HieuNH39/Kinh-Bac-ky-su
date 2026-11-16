@@ -39,6 +39,8 @@ const P = {
   gift: "M3 8h18v4H3zm1 5h7v8H4zm9 0h7v8h-7zM12 8C10 4 7 4 7 6s3 2 5 2zm0 0c2-4 5-4 5-2s-3 2-5 2z",
   lantern: "M11 2h2v2.1A6 6 0 0 1 18 10v3a6 6 0 0 1-12 0v-3a6 6 0 0 1 5-5.9zM10 20h4v2h-4z",
   skipNext: "M6 6l8.5 6L6 18zM16 6h2v12h-2z", skipPrev: "M18 6l-8.5 6L18 18zM6 6h2v12H6z",
+  volume: "M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z",
+  volumeOff: "M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.8 8.8 0 0 0 21 12a9 9 0 0 0-7-8.77v2.06A7 7 0 0 1 19 12zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25a7 7 0 0 1-2.25 1.18v2.06a9 9 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9zM12 4 9.91 6.09 12 8.18z",
   share: "M18 16a3 3 0 0 0-2.4 1.2l-6.7-3.4a3 3 0 0 0 0-1.6l6.7-3.4A3 3 0 1 0 15 7l-6.7 3.4a3 3 0 1 0 0 3.2L15 17a3 3 0 1 0 3-1z",
   globe: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.9 6h-3a15.7 15.7 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8zM12 4c.8 1.2 1.5 2.5 1.9 4h-3.8c.4-1.5 1.1-2.8 1.9-4zM4.3 14a8.2 8.2 0 0 1 0-4h3.4a16.5 16.5 0 0 0 0 4zm.8 2h3a15.7 15.7 0 0 0 1.4 3.6A8 8 0 0 1 5.1 16zm3-8h-3a8 8 0 0 1 4.4-3.6C8.8 5.5 8.3 6.7 8.1 8zM12 20c-.8-1.2-1.5-2.5-1.9-4h3.8c-.4 1.5-1.1 2.8-1.9 4zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.7 14.7 0 0 1 0 4zm.3 5.6c.6-1.1 1.1-2.3 1.4-3.6h3a8 8 0 0 1-4.4 3.6zm1.7-5.6a16.5 16.5 0 0 0 0-4h3.4a8.2 8.2 0 0 1 0 4z",
 };
@@ -71,8 +73,11 @@ export function distLabel(site) {
 // ---------- Dấu son của từng di tích ----------
 export function stampSvg(site, state = "none", size = 96) {
   // state: none | half | done
-  const name = (site.short || L(site.name)).toUpperCase().replace(/^(CHÙA|ĐỀN|ĐÌNH|LÀNG|THÀNH|KHU|LĂNG|QUẦN THỂ)\s+/u, "");
-  const words = name.split(/\s+/);
+  // Bỏ các tiền tố loại hình (kể cả khi lặp: "Đình – chùa Đồng Kỵ" → "ĐỒNG KỴ") và dấu gạch đứng riêng
+  let name = (site.short || L(site.name)).toUpperCase(), prev;
+  do { prev = name; name = name.replace(/^(CHÙA|ĐỀN|ĐÌNH|LÀNG|THÀNH|KHU|LĂNG|QUẦN THỂ)\s+|^[–—,-]\s*/u, ""); } while (name !== prev);
+  const words = name.split(/\s+/).filter((w) => !/^[–—-]$/.test(w));
+  name = words.join(" ");
   const lines = words.length > 2 ? [words.slice(0, Math.ceil(words.length / 2)).join(" "), words.slice(Math.ceil(words.length / 2)).join(" ")] : words.length === 2 ? words : [name];
   const red = state === "done" ? "var(--son-600)" : "none";
   const ink = state === "done" ? "#fbf7ef" : state === "half" ? "var(--son-600)" : "var(--giay-300)";
@@ -97,15 +102,24 @@ export function photoCredit(p) {
   const link = p.url ? ` <a href="${esc(p.url)}" target="_blank" rel="noopener">${t("photoBy")}: ${esc(who)}</a>` : who ? ` ${t("photoBy")}: ${esc(who)}` : "";
   return `${esc(cap)}${cap && link ? " —" : ""}${link}`;
 }
+// Khung tranh Đông Hồ (v3.4): giấy điệp, viền mực, dải hoa thị đỏ son – xanh lá, góc hình thoi vàng hoa hòe, lời đề và dấu son
+const dhFrame = (inner, cap) => `<div class="dh"><div class="dh-vien"><div class="dh-anh">${inner}</div></div>
+  <div class="dh-cap"><span>${esc(cap || "")}</span><img class="dh-dau" src="img/brand/logo-dau-son.svg" alt=""></div></div>`;
+export function photoSource(p) {
+  if (!p || p.todo) return "";
+  const who = [p.credit, p.license].filter(Boolean).join(" · ");
+  if (!who) return "";
+  return p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">${t("photoBy")}: ${esc(who)}</a>` : `${t("photoBy")}: ${esc(who)}`;
+}
 export function gallery(photos, id = "g") {
   const list = (photos || []).filter(Boolean);
-  if (!list.length) return `<div class="gallery"><div class="ph-todo"><p>${t("photoTodo")}</p></div></div>`;
+  if (!list.length) return `<div class="gallery"><figure>${dhFrame(`<div class="ph-todo"><p>${t("photoTodo")}</p></div>`, "")}</figure></div>`;
   return `<div class="gallery" data-gallery="${id}">
     <div class="track">${list.map((p, i) => p.todo
-      ? `<figure><div class="ph-todo"><p><b>${esc(L(p.caption) || "")}</b><br>${t("photoTodo")}</p></div></figure>`
-      : `<figure><img src="${esc(p.src)}" alt="${esc(L(p.alt) || L(p.caption) || "")}" ${i ? 'loading="lazy"' : ""} data-full="${esc(p.src)}" data-i="${i}"></figure>`).join("")}</div>
+      ? `<figure>${dhFrame(`<div class="ph-todo"><p>${t("photoTodo")}</p></div>`, L(p.caption))}</figure>`
+      : `<figure>${dhFrame(`<img src="${esc(p.src)}" alt="${esc(L(p.alt) || L(p.caption) || "")}" ${i ? 'loading="lazy"' : ""} data-full="${esc(p.src)}" data-i="${i}">`, L(p.caption))}</figure>`).join("")}</div>
     ${list.length > 1 ? `<button class="nav-btn prev" type="button" aria-label="‹">${icon("back")}</button><button class="nav-btn next" type="button" aria-label="›">${icon("next")}</button>` : ""}
-    <div class="gallery-cap" style="padding:8px 16px 0;font-size:.82rem;color:var(--muc-600)">${photoCredit(list[0])}</div>
+    <div class="gallery-cap">${photoSource(list[0])}</div>
     ${list.length > 1 ? `<div class="dots">${list.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("")}</div>` : ""}
   </div>`;
 }
@@ -120,7 +134,7 @@ export function wireGallery(root, photos) {
       const i = Math.round(track.scrollLeft / track.clientWidth);
       if (i === cur) return;
       cur = i; dots.forEach((d, k) => d.classList.toggle("on", k === i));
-      if (cap) cap.innerHTML = photoCredit(list[i]);
+      if (cap) cap.innerHTML = photoSource(list[i]);
     };
     track.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
     g.querySelector(".prev")?.addEventListener("click", () => track.scrollBy({ left: -track.clientWidth, behavior: "smooth" }));
@@ -167,8 +181,8 @@ export function nonSvg(img) {
     const c1 = side < 0 ? "126 420 160 440" : "274 420 240 440";
     let tua = "";
     for (let k = 0; k < 13; k++) { const dx = (k - 6) * 2.2; tua += `M${ex} 466q${(dx * 0.35).toFixed(1)} 16 ${dx.toFixed(1)} 30`; }
-    return `<g class="tua ${side < 0 ? "l" : "r"}"><path d="M${sx} 372C${c1} ${ex} 460" fill="none" stroke="#c22d5b" stroke-width="10" stroke-linecap="round"/>
-      <path d="${tua}" fill="none" stroke="#c22d5b" stroke-width="1.6" stroke-linecap="round"/><circle cx="${ex}" cy="464" r="6" fill="#dcb46a" stroke="#9a6f2a" stroke-width="1.5"/></g>`;
+    return `<g class="tua ${side < 0 ? "l" : "r"}"><path d="M${sx} 372C${c1} ${ex} 460" fill="none" stroke="#cf5a6e" stroke-width="10" stroke-linecap="round"/>
+      <path d="${tua}" fill="none" stroke="#b93a26" stroke-width="1.6" stroke-linecap="round"/><circle cx="${ex}" cy="464" r="6" fill="#dcb46a" stroke="#9a6f2a" stroke-width="1.5"/></g>`;
   };
   return `<svg viewBox="0 0 400 500" width="100%" aria-hidden="true" focusable="false">
     <defs><clipPath id="nonLong"><circle cx="${C}" cy="${C}" r="${R0}"/></clipPath></defs>
@@ -181,13 +195,23 @@ export function nonSvg(img) {
     <circle cx="${C}" cy="${C}" r="${R1 - 1}" fill="none" stroke="#7d5820" stroke-width="3.5"/>
   </svg>`;
 }
-// Cổ áo mớ ba: ba lớp hồng điều, lá mạ, vàng rơm xếp hình chữ V, nối sân khấu tím với nền giấy.
-export function collarSvg() {
-  return `<svg class="collar" width="100%" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <path d="M0 0H1000V8L500 40L0 8Z" fill="var(--tim-900)"/>
-    <path d="M0 8L500 40L1000 8V18L500 50L0 18Z" fill="var(--son-600)"/>
-    <path d="M0 18L500 50L1000 18V24L500 56L0 24Z" fill="#4f9a2c"/>
-    <path d="M0 24L500 56L1000 24V28L500 60L0 28Z" fill="var(--rom)"/>
-    <path d="M0 28L500 60L0 60Z M1000 28L500 60L1000 60Z" fill="var(--giay-100)"/>
-  </svg>`;
+
+// Nút lùi/tiến 15 giây: mũi tên vòng có số 15 ở giữa
+export function seekIcon(dir) {
+  const d = dir < 0 ? "M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z" : "M12 5V1l5 5-5 5V7a6 6 0 1 0 6 6h2a8 8 0 1 1-8-8z";
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/><text x="12" y="16.3" text-anchor="middle" font-size="6.6" font-weight="700" font-family="Be Vietnam Pro, Arial, sans-serif">15</text></svg>`;
+}
+// Chia sẻ (v3.4): dùng bảng chia sẻ của máy (Zalo, Messenger, thư…), nếu không có thì chép đường dẫn
+export async function shareLink(title, text, hash) {
+  const url = `${location.origin}${location.pathname}${hash}`;
+  if (navigator.share) {
+    try { await navigator.share({ title, text, url }); return "shared"; } catch (e) { if (e && e.name === "AbortError") return "cancel"; }
+  }
+  try { await navigator.clipboard.writeText(url); }
+  catch {
+    const ta = document.createElement("textarea"); ta.value = url; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.append(ta); ta.select(); try { document.execCommand("copy"); } catch { /* bỏ qua */ } ta.remove();
+  }
+  toast(t("linkCopied"));
+  return "copied";
 }

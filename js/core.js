@@ -11,7 +11,7 @@ export const store = {
 
 export const settings = Object.assign(
   { lang: (navigator.language || "vi").startsWith("vi") ? "vi" : (navigator.language || "").startsWith("ko") ? "ko" : "en",
-    theme: "auto", size: "vua", speed: 1, autoplay: true, sim: "" },
+    theme: "auto", size: "vua", speed: 1, volume: 1, autoplay: true, sim: "" },
   store.get("settings", {}),
 );
 export function saveSettings() { store.set("settings", settings); }
@@ -91,7 +91,7 @@ export const Player = {
   init() {
     const a = this.audio;
     a.preload = "none";
-    ["play", "pause", "timeupdate", "loadedmetadata"].forEach((ev) => a.addEventListener(ev, () => this.emit()));
+    ["play", "pause", "timeupdate", "loadedmetadata", "volumechange"].forEach((ev) => a.addEventListener(ev, () => this.emit()));
     a.addEventListener("ended", () => {
       if (this.item) { markListened(this.item.id); logEvent("complete", { stop: this.item.id, site: this.item.siteId }); }
       const done = this.item;
@@ -103,8 +103,8 @@ export const Player = {
     if ("mediaSession" in navigator) {
       navigator.mediaSession.setActionHandler("play", () => a.play());
       navigator.mediaSession.setActionHandler("pause", () => a.pause());
-      navigator.mediaSession.setActionHandler("seekbackward", () => { a.currentTime = Math.max(0, a.currentTime - 10); });
-      navigator.mediaSession.setActionHandler("seekforward", () => { a.currentTime = Math.min(a.duration || 0, a.currentTime + 10); });
+      navigator.mediaSession.setActionHandler("seekbackward", () => this.seek(-15));
+      navigator.mediaSession.setActionHandler("seekforward", () => this.seek(15));
       navigator.mediaSession.setActionHandler("nexttrack", () => this.next());
       navigator.mediaSession.setActionHandler("previoustrack", () => this.prev());
     }
@@ -119,13 +119,19 @@ export const Player = {
   },
   playQueue(items, start = 0, source = "class") { this.queue = items; this.playAt(start, source); },
   playAt(i, source = "class") { this.qi = i; this._load(this.queue[i], source); },
-  next() { if (this.qi + 1 < this.queue.length) this.playAt(this.qi + 1); },
-  prev() { if (this.qi > 0) this.playAt(this.qi - 1); },
+  // stepHook do app.js gắn: chuyển sang điểm dừng trước/sau (cả khi không nghe theo danh sách)
+  next() { if (this.stepHook) return this.stepHook(1); if (this.qi + 1 < this.queue.length) this.playAt(this.qi + 1); },
+  prev() { if (this.stepHook) return this.stepHook(-1); if (this.qi > 0) this.playAt(this.qi - 1); },
+  seek(sec) { const a = this.audio; if (!this.item) return; a.currentTime = Math.max(0, Math.min((a.duration || 0) - 0.3, a.currentTime + sec)); this.emit(); },
+  setVolume(v) { settings.volume = Math.max(0, Math.min(1, v)); saveSettings(); this.audio.volume = settings.volume; this.audio.muted = settings.volume === 0; this.emit(); },
+  // iPhone/iPad không cho trang web đổi âm lượng (chỉ tắt tiếng được)
+  volumeAdjustable: (() => { try { const x = new Audio(); x.volume = 0.5; return Math.abs(x.volume - 0.5) < 0.01; } catch { return false; } })(),
   _load(item, source) {
     this.error = false;
     if (!this.item || this.item.src !== item.src) { this.audio.src = item.src; }
     this.item = item;
     this.audio.playbackRate = settings.speed;
+    this.audio.volume = settings.volume ?? 1;
     this.audio.play().catch(() => { /* cần người dùng chạm trước */ });
     logEvent("play", { stop: item.id, site: item.siteId, source });
     if ("mediaSession" in navigator && window.MediaMetadata) {

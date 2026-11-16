@@ -1,7 +1,7 @@
 // Kinh Bắc Ký Sự – điều khiển chính: tải dữ liệu, chuyển trang theo địa chỉ sau dấu #, định vị, trình phát.
 import { LANGS } from "./i18n.js";
 import { settings, saveSettings, progress, Geo, Player, logEvent, markArrived, store } from "./core.js";
-import { esc, t, L, icon, toast } from "./ui.js";
+import { esc, t, L, icon, toast, seekIcon, shareLink } from "./ui.js";
 import * as A from "./views-a.js";
 import * as B from "./views-b.js";
 
@@ -126,6 +126,8 @@ function applySettings() {
   document.documentElement.dataset.size = settings.size;
   document.getElementById("langBtn").textContent = LANGS.find((l) => l.id === settings.lang).label;
   document.getElementById("backBtn")?.setAttribute("aria-label", t("back"));
+  const lab = { prev: "prevStop", back15: "back15", toggle: "playPause", fwd15: "fwd15", next: "nextStop", vol: "volume", speed: "speedLabel", share: "share", close: "close" };
+  Object.entries(lab).forEach(([k, v]) => document.querySelector(`#mini [data-act=${k}]`)?.setAttribute("aria-label", t(v)));
   document.querySelector(".brand b").textContent = t("appName");
   document.querySelector(".brand small").textContent = t("tagline");
   const labels = { home: "navHome", map: "navMap", routes: "navRoutes", passport: "navPassport", more: "navMore" };
@@ -136,16 +138,71 @@ export function setLang(id) {
 }
 
 const mini = document.getElementById("mini");
+// ---------- Trình phát (v3.4): điểm trước/sau, ±15 giây, âm lượng, tốc độ, chia sẻ ----------
+const fmtT = (x) => { x = Math.max(0, Math.floor(x || 0)); return `${Math.floor(x / 60)}:${String(x % 60).padStart(2, "0")}`; };
+mini.querySelector("[data-act=prev]").innerHTML = icon("skipPrev");
+mini.querySelector("[data-act=next]").innerHTML = icon("skipNext");
+mini.querySelector("[data-act=back15]").innerHTML = seekIcon(-1);
+mini.querySelector("[data-act=fwd15]").innerHTML = seekIcon(1);
+const seekEl = mini.querySelector(".seek");
+const volPop = mini.querySelector(".vol-pop");
+let seeking = false, nbFor = null, nb = { prev: null, next: null };
+
+// Tìm điểm dừng trước/sau có bài nghe: theo danh sách đang phát (nghe liền cả bài, nghe ở lớp) hoặc theo thứ tự điểm dừng của di tích
+async function neighbor(dir) {
+  const it = Player.item;
+  if (!it) return null;
+  if (Player.queue.length) { const j = Player.qi + dir; return j >= 0 && j < Player.queue.length ? { qi: j, item: Player.queue[j] } : null; }
+  try {
+    const site = await loadSite(it.siteId);
+    const i = site.stops.findIndex((x) => x.id === it.id);
+    for (let j = i + dir; j >= 0 && j < site.stops.length; j += dir) { const x = audioItem(site, site.stops[j]); if (x) return { item: x }; }
+  } catch { /* chưa tải được dữ liệu di tích */ }
+  return null;
+}
+async function refreshNeighbors() {
+  const it = Player.item;
+  const key = it ? `${it.id}|${Player.qi}|${Player.queue.length}` : null;
+  if (key === nbFor) return;
+  nbFor = key;
+  nb = { prev: await neighbor(-1), next: await neighbor(1) };
+  mini.querySelector("[data-act=prev]").disabled = !nb.prev;
+  mini.querySelector("[data-act=next]").disabled = !nb.next;
+}
+async function step(dir) {
+  const n = await neighbor(dir);
+  if (!n) { toast(t(dir > 0 ? "lastStop" : "firstStop")); return; }
+  const was = Player.item, h = location.hash;
+  if (n.qi !== undefined) Player.playAt(n.qi, "player"); else Player.play(n.item, "player");
+  // đang xem trang của bài cũ thì theo bài sang trang điểm dừng mới
+  if (was && (h === was.href || h === `#/stop/${was.id}` || h === `#/site/${was.siteId}`)) location.hash = Player.item.href;
+}
+Player.stepHook = step;
+
+function drawVolume() {
+  const v = settings.volume ?? 1, muted = Player.audio.muted || v === 0;
+  mini.querySelector("[data-act=vol]").innerHTML = icon(muted ? "volumeOff" : "volume");
+  if (volPop.hidden) return;
+  volPop.innerHTML = Player.volumeAdjustable
+    ? `<button type="button" data-act="mute" aria-label="${t("mute")}">${icon(muted ? "volumeOff" : "volume")}</button><input type="range" min="0" max="100" value="${Math.round((muted ? 0 : v) * 100)}" aria-label="${t("volume")}">`
+    : `<button type="button" data-act="mute" aria-label="${t("mute")}">${icon(muted ? "volumeOff" : "volume")}</button><p>${t("volumeHint")}</p>`;
+}
 function drawMini() {
   const it = Player.item;
   mini.classList.toggle("on", !!it);
-  document.documentElement.style.setProperty("--player-h", it ? "64px" : "0px");
-  if (!it) return;
-  const playing = !Player.audio.paused;
+  document.documentElement.style.setProperty("--player-h", it ? "146px" : "0px");
+  if (!it) { volPop.hidden = true; return; }
+  const a = Player.audio, playing = !a.paused;
+  const art = mini.querySelector(".art");
+  if (it.art) { if (art.getAttribute("src") !== it.art) art.src = it.art; art.hidden = false; } else art.hidden = true;
   mini.querySelector(".t").innerHTML = `<a href="${esc(it.href)}"><b>${esc(it.title)}</b><span class="tiny">${esc(it.siteName || "")}${Player.queue.length ? ` · ${Player.qi + 1}/${Player.queue.length}` : ""}</span></a>`;
+  if (!seeking) mini.querySelector(".time.now").textContent = fmtT(a.currentTime);
+  mini.querySelector(".time.dur").textContent = a.duration ? fmtT(a.duration) : "–:––";
   mini.querySelector("[data-act=toggle]").innerHTML = icon(playing ? "pause" : "play");
   mini.querySelector("[data-act=speed]").textContent = `${String(settings.speed).replace(".", ",")}×`;
-  mini.querySelector(".bar i").style.width = `${Player.pct}%`;
+  if (!seeking) { seekEl.value = Math.round(Player.pct * 10); seekEl.style.setProperty("--p", `${Player.pct}%`); }
+  drawVolume();
+  refreshNeighbors();
   document.querySelectorAll("[data-play]").forEach((b) => {
     const on = Player.isPlaying(b.dataset.play);
     b.classList.toggle("is-on", on);
@@ -156,12 +213,39 @@ function drawMini() {
   });
   document.querySelectorAll("[data-prog]").forEach((p) => { if (Player.item?.id === p.dataset.prog) p.style.width = `${Player.pct}%`; });
 }
-mini.addEventListener("click", (e) => {
+seekEl.addEventListener("input", () => { seeking = true; seekEl.style.setProperty("--p", `${seekEl.value / 10}%`); const a = Player.audio; if (a.duration) mini.querySelector(".time.now").textContent = fmtT((seekEl.value / 1000) * a.duration); });
+seekEl.addEventListener("change", () => { const a = Player.audio; if (a.duration) a.currentTime = (seekEl.value / 1000) * a.duration; seeking = false; });
+volPop.addEventListener("input", (e) => { if (e.target.type === "range") { Player.audio.muted = false; Player.setVolume(e.target.value / 100); } });
+mini.addEventListener("click", async (e) => {
   const act = e.target.closest("button")?.dataset.act;
+  if (!act) return;
+  const it = Player.item;
   if (act === "toggle") Player.toggle();
-  if (act === "back10") Player.audio.currentTime = Math.max(0, Player.audio.currentTime - 10);
-  if (act === "speed") { const s = [0.8, 1, 1.2, 1.5]; Player.setSpeed(s[(s.indexOf(settings.speed) + 1) % s.length] ?? 1); }
-  if (act === "close") Player.stop();
+  if (act === "back15") Player.seek(-15);
+  if (act === "fwd15") Player.seek(15);
+  if (act === "prev") step(-1);
+  if (act === "next") step(1);
+  if (act === "speed") { const sp = [0.8, 1, 1.2, 1.5]; Player.setSpeed(sp[(sp.indexOf(settings.speed) + 1) % sp.length] ?? 1); }
+  if (act === "vol") { volPop.hidden = !volPop.hidden; mini.querySelector("[data-act=vol]").setAttribute("aria-expanded", String(!volPop.hidden)); drawVolume(); }
+  if (act === "mute") { const a = Player.audio; if (a.muted || (settings.volume ?? 1) === 0) { a.muted = false; if (!settings.volume) Player.setVolume(1); } else a.muted = true; drawVolume(); }
+  if (act === "share" && it) {
+    const r = await shareLink(`${it.title} – ${it.siteName || t("appName")}`, t("shareText", it.siteName || it.title), it.href);
+    logEvent("share", { stop: it.id, site: it.siteId, how: r });
+  }
+  if (act === "close") { volPop.hidden = true; Player.stop(); }
+});
+// Nút chia sẻ trên trang di tích, điểm dừng (data-share = đường dẫn trong ứng dụng)
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-share]");
+  if (!b) return;
+  const title = b.dataset.shareTitle || t("appName");
+  const r = await shareLink(title, t("shareText", title), b.dataset.share);
+  logEvent("share", { page: b.dataset.share, how: r });
+});
+document.addEventListener("click", (e) => {
+  if (volPop.hidden) return;
+  const path = e.composedPath(); // nút có thể vừa được vẽ lại, nên xét cả đường đi của sự kiện
+  if (!path.some((el) => el === volPop || el?.dataset?.act === "vol")) { volPop.hidden = true; mini.querySelector("[data-act=vol]").setAttribute("aria-expanded", "false"); }
 });
 
 // ---------- Băng báo khi đến gần di tích ----------
