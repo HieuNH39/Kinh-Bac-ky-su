@@ -384,7 +384,7 @@ p { margin: 0 0 .9rem; }
 .mini-ctl [data-act=speed] { font-size: .82rem; min-width: 44px; }
 .vol-pop { position: absolute; right: 10px; bottom: calc(100% + 8px); display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 22px;
   background: var(--kinh); -webkit-backdrop-filter: blur(28px) saturate(200%); backdrop-filter: blur(28px) saturate(200%); border: 1px solid var(--kinh-vien); box-shadow: var(--kinh-bong); }
-.vol-pop[hidden] { display: none; }
+.vol-pop[hidden], .mini .art[hidden] { display: none; }
 .vol-pop input { width: 150px; accent-color: var(--son-600); }
 .vol-pop p { margin: 0; font-size: .8rem; max-width: 180px; line-height: 1.35; color: var(--muc-600); }
 

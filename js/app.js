@@ -34,7 +34,7 @@ export function findStop(stopId) {
 export function audioItem(site, stop) {
   const src = stop.audio?.[settings.lang] || (settings.lang === "ko" ? stop.audio?.en : null);
   if (!src) return null;
-  return { id: stop.id, siteId: site.id, siteName: L(site.name), src, title: `${L(stop.title)}`, href: stop.kind === "intro" ? `#/site/${site.id}` : `#/stop/${stop.id}`, art: stop.photos?.[0]?.thumb };
+  return { id: stop.id, siteId: site.id, siteName: L(site.name), src, title: `${L(stop.title)}`, href: stop.kind === "intro" ? `#/site/${site.id}` : `#/stop/${stop.id}`, art: stop.photos?.find((p) => p.thumb)?.thumb || site.cover?.thumb || "img/brand/logo-dau-son.svg" };
 }
 
 // ---------- Định tuyến ----------
@@ -58,7 +58,7 @@ const routes = [
   [/^#\/qr(?:\/([\w-]+))?$/, (m) => B.qrSheet(m[1])],
   [/^#\/teacher$/, () => B.teacher()],
 ];
-const navOf = (h) => (h.startsWith("#/map") ? "map" : h.startsWith("#/route") ? "routes" : h.startsWith("#/passport") ? "passport"
+const navOf = (h) => (h.startsWith("#/map") ? "map" : /^#\/(route|site|stop|quiz)/.test(h) ? "routes" : h.startsWith("#/passport") ? "passport"
   : /^#\/(more|settings|about|qr|teacher|timeline|festivals|food|plan|class)/.test(h) ? "more" : "home");
 
 // ---------- Nút quay lại (v3.3): có ở mọi trang trừ trang chủ ----------
