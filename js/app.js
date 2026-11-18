@@ -125,8 +125,8 @@ function applySettings() {
   document.documentElement.lang = settings.lang;
   document.documentElement.dataset.theme = settings.theme;
   document.documentElement.dataset.size = settings.size;
-  const lb = document.getElementById("langBtn"), lab = LANGS.find((l) => l.id === settings.lang).label;
-  lb.textContent = lab; lb.setAttribute("aria-label", `${lab} – Ngôn ngữ / Language`);   // tên đọc chứa đúng chữ hiển thị
+  const langBtn = document.getElementById("langBtn"), langLabel = LANGS.find((l) => l.id === settings.lang).label;
+  langBtn.textContent = langLabel; langBtn.setAttribute("aria-label", `${langLabel} – Ngôn ngữ / Language`);   // tên đọc chứa đúng chữ hiển thị
   document.getElementById("backBtn")?.setAttribute("aria-label", t("back"));
   const lab = { prev: "prevStop", back15: "back15", toggle: "playPause", fwd15: "fwd15", next: "nextStop", vol: "volume", speed: "speedLabel", share: "share", close: "close" };
   Object.entries(lab).forEach(([k, v]) => document.querySelector(`#mini [data-act=${k}]`)?.setAttribute("aria-label", t(v)));

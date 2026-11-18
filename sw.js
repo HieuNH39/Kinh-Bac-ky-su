@@ -2,7 +2,7 @@
    - Khung (HTML, CSS, JS, phông chữ, logo, danh mục di tích): lưu sẵn khi cài.
    - Dữ liệu di tích, ảnh, giọng đọc: lưu khi người dùng bấm "Tải về máy" (bộ nhớ hl-site-<mã>) hoặc khi đã mở.
    - Ô bản đồ OpenStreetMap: lưu những ô đã xem, tối đa 400 ô. */
-const VERSION = "kb-shell-v3-5-1";
+const VERSION = "kb-shell-v3-5-2";
 const SHELL = ["./", "index.html", "css/app.css", "js/app.js", "js/core.js", "js/i18n.js", "js/ui.js", "js/views-a.js", "js/views-b.js", "js/sodo.js",
   "vendor/leaflet/leaflet.js", "vendor/leaflet/leaflet.css", "vendor/qrcode.js", "manifest.webmanifest", "data/index.json",
   "img/brand/logo-dau-son.svg", "img/brand/icon-app.svg", "img/brand/goc-khung.svg", "img/brand/song-nuoc.svg", "img/brand/may-cuon.svg",
