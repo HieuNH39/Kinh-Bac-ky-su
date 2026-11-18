@@ -257,9 +257,21 @@ export async function classPage(key) {
   return `<div class="wrap empty">${t("classMode")}</div>`;
 }
 
+// ---------- Sơ đồ các di tích ----------
+export function plansIndex() {
+  const groups = D.index.routes.map((r, i) => ({ r, i, sites: r.sites.map((id) => D.byId[id]).filter((x) => x?.hasPlan) })).filter((g) => g.sites.length);
+  return `<div class="wrap"><div class="section" style="margin-top:16px"><h2>${t("plansAll")}</h2></div>
+    <p class="lead-text">${t("plansText")}.</p>
+    ${groups.map(({ r, i, sites }) => `<h3 class="sodo-h">${t("navRoutes")} ${i + 1} · ${esc(L(r.name))}</h3>
+      <div class="site-list">${sites.map((s) => `<a class="card site-item" href="#/site/${s.id}/plan">
+        ${s.cover ? `<img src="${esc(s.cover.thumb)}" alt="" loading="lazy">` : ""}
+        <div><h3>${esc(L(s.name))}</h3><div class="small muted">${t("planStops", s.stopCount)}</div></div>${icon("plan", "")}</a>`).join("")}</div>`).join("")}
+  </div>`;
+}
+
 // ---------- Thêm ----------
 export function more() {
-  const items = [["#/plan", "clock", "plan", "planText"], ["#/food", "food", "food", "foodText"], ["#/festivals", "lantern", "festivals", "festText"], ["#/timeline", "timeline", "timeline", "timelineText"],
+  const items = [["#/so-do", "plan", "plansAll", "plansText"], ["#/plan", "clock", "plan", "planText"], ["#/food", "food", "food", "foodText"], ["#/festivals", "lantern", "festivals", "festText"], ["#/timeline", "timeline", "timeline", "timelineText"],
     ["#/class", "class", "classMode", "classText"], ["#/passport", "passport", "passport", "passportText"], ["#/qr", "qr", "qrSheet", null], ["#/settings", "settings", "settings", null],
     ["#/about", "info", "about", "howMade"], ["#/teacher", "pen", "teacher", null]];
   return `<div class="wrap"><div class="section" style="margin-top:16px"><h2>${t("more")}</h2></div>

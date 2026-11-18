@@ -2,6 +2,7 @@
 import { D, loadSite, audioItem, onLeave, findStop } from "./app.js";
 import { settings, progress, Geo, Player, logEvent, markArrived, store, nextFest, PASS } from "./core.js";
 import { esc, t, L, icon, gm, gmTerms, distLabel, stampSvg, stampState, gallery, wireGallery, toast, rankLabel, fmtDate, nonSvg } from "./ui.js";
+import { planSection, wirePlan } from "./sodo.js";
 
 let post = [];
 export function afterRender() { const f = post; post = []; f.forEach((fn) => fn()); }
@@ -221,7 +222,13 @@ export async function sitePage(id, tab = "tour") {
     document.getElementById("allBtn")?.addEventListener("click", () => allItems.length && Player.playQueue(allItems, 0, "site-all"));
     document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => { history.replaceState(null, "", `#/site/${id}/${b.dataset.tab}`); showTab(b.dataset.tab); }));
     document.getElementById("dlBtn")?.addEventListener("click", (e) => cacheSite(s, e.currentTarget));
-    showTab(tab);
+    document.querySelector("[data-open-plan]")?.addEventListener("click", (e) => {   // mở thẻ Sơ đồ ngay, không tải lại trang
+      e.preventDefault(); history.replaceState(null, "", `#/site/${id}/plan`); showTab("plan");
+      document.querySelector(".tabs")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    const planEl = document.querySelector('[data-panel="plan"]');
+    if (planEl) onLeave(wirePlan(planEl, s));
+    showTab(s.plan || tab !== "plan" ? tab : "tour");
     markCached(s);
   });
   const nearby = D.index.sites.filter((x) => x.id !== id).map((x) => ({ x, d: Geo.distance(s.gps, x.gps) })).sort((a, b) => a.d - b.d).slice(0, 3);
@@ -238,12 +245,13 @@ export async function sitePage(id, tab = "tour") {
       ${introItem ? `<button class="btn primary" id="introBtn" data-play="${intro.id}" data-label="${t("listenIntro")}" type="button">${icon(Player.isPlaying(intro.id) ? "pause" : "play")}<span>${t("listenIntro")}</span></button>` : ""}
       ${allItems.length > 1 ? `<button class="btn" id="allBtn" type="button">${icon("skipNext")}${t("listenAll")}</button>` : ""}
       <a class="btn" href="${gm.dir(s.gps)}" target="_blank" rel="noopener">${icon("dir")}${t("directions")}</a>
+      ${s.plan ? `<a class="btn" href="#/site/${id}/plan" data-open-plan>${icon("plan")}${t("planTitle")}</a>` : ""}
       ${s.quiz?.length ? `<a class="btn" href="#/quiz/${id}">${icon("quiz")}${t("quizN", s.quiz.length)}${q ? ` · ${q.score}/${q.total}` : ""}</a>` : ""}
       <button class="btn" id="dlBtn" type="button">${icon("download")}<span>${t("download")}</span></button>
       <button class="btn" type="button" data-share="#/site/${id}" data-share-title="${esc(L(s.name))}">${icon("share")}${t("share")}</button>
     </div>
     <div class="tabs" role="tablist">
-      <button role="tab" data-tab="tour">${t("tabTour")}</button><button role="tab" data-tab="travel">${t("tabTravel")}</button><button role="tab" data-tab="docs">${t("tabDocs")}</button>
+      <button role="tab" data-tab="tour">${t("tabTour")}</button><button role="tab" data-tab="travel">${t("tabTravel")}</button><button role="tab" data-tab="docs">${t("tabDocs")}</button>${s.plan ? `<button role="tab" data-tab="plan">${t("tabPlan")}</button>` : ""}
     </div>
     <section data-panel="tour">
       <div class="stops">${s.stops.map((st, i) => `<a class="card stop-item${progress.listened[st.id] ? " done" : ""}" href="${st.kind === "intro" ? `#/stop/${st.id}` : `#/stop/${st.id}`}">
@@ -280,6 +288,7 @@ export async function sitePage(id, tab = "tour") {
       <div class="section"><h2>${t("nearbySites")}</h2></div>
       <div class="site-list">${nearby.map(({ x }) => siteItem(x)).join("")}</div>
     </section>
+    ${s.plan ? `<section data-panel="plan" hidden>${planSection(s)}</section>` : ""}
     <section data-panel="docs" hidden>
       ${Object.keys(KIND).filter((k) => byKind[k]).map((k) => `<h3 style="margin-top:16px">${esc(L(KIND[k]))}</h3><ol class="sources">${byKind[k].map((src) => `<li id="src-${esc(src.id)}"><a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.title)}</a>${src.publisher ? ` <span class="muted">– ${esc(src.publisher)}</span>` : ""}</li>`).join("")}</ol>`).join("")}
       <div class="note" style="margin-top:14px">${t("howMade")}: <a href="#/about">${t("about")}</a> · <a href="#/qr/${id}">${t("qrSheet")}</a></div>

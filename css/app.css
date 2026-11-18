@@ -569,3 +569,54 @@ svg:not([width]) { width: 1.25em; height: 1.25em; fill: currentColor; flex: none
   .toast { bottom: 90px; }
   .food { grid-template-columns: 1fr 1fr; }
 }
+
+/* ---------- Sơ đồ tham quan ---------- */
+.sodo { margin-top: 14px; }
+.sodo-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.sodo-bar h2 { margin: 0; font-size: 1.25rem; }
+.sodo-bar .row { gap: 6px; align-items: center; }
+.sodo-khung { position: relative; overflow: hidden; border-radius: var(--r-lg); background: #f4ecdb;
+  border: 2.5px solid var(--muc-900); box-shadow: var(--bong-1); overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.sodo-khung:focus-visible { outline: 3px solid var(--son-600); outline-offset: 2px; }
+.sodo-zoom { width: 100%; transition: width .25s ease; }
+.sodo .sodo-svg { display: block; width: 100%; height: auto; max-height: 76vh; max-width: none; fill: initial; margin: 0 auto; }
+.sodo-khung.zoomed { overflow: auto; max-height: min(80vh, 920px); }
+.sodo-khung.zoomed .sodo-svg { max-height: none; }
+@media (min-width: 1024px) {
+  .sodo-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr); gap: 26px; align-items: start; }
+  .sodo-grid .sodo-map { position: sticky; top: 132px; }
+  .sodo-grid .sodo-h:first-child { margin-top: 0; }
+  .sodo-legend { grid-template-columns: 1fr; }
+}
+.sodo-svg a { cursor: pointer; }
+.sodo-svg a:focus-visible polygon:last-of-type { stroke: var(--vang-500); stroke-width: 1.6; }
+.sodo-svg .sodo-pulse { animation: sodo-nhip 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes sodo-nhip { 50% { transform: scale(1.25); } }
+@media (prefers-reduced-motion: reduce) { .sodo-svg .sodo-pulse { animation: none; } .sodo-zoom { transition: none; } }
+.sodo-here-msg { margin: 6px 2px 0; }
+.sodo-h { margin: 18px 0 8px; font-size: 1.05rem; }
+.sodo-legend { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px 14px; }
+.sodo-legend li { display: flex; align-items: center; gap: 10px; font-size: .9rem; color: var(--muc-900); }
+.sodo-legend svg { flex: none; width: 30px; height: 20px; }
+.sodo-stops { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 6px; }
+.sodo-stops a { display: flex; align-items: flex-start; gap: 10px; padding: 9px 12px; border-radius: 14px; background: var(--giay-50); text-decoration: none; color: inherit; box-shadow: 0 0 0 1px var(--giay-300); }
+.sodo-stops b { flex: none; display: grid; place-items: center; width: 28px; height: 28px; color: #fff; font-size: .85rem;
+  background: var(--son-600); clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); padding-top: 3px; }
+.sodo-stops span { display: flex; flex-direction: column; font-weight: 600; font-size: .95rem; }
+.sodo-stops small { font-weight: 400; color: var(--muc-600); font-size: .82rem; }
+.sodo-stops em { margin-left: auto; font-style: normal; font-size: .75rem; color: var(--cham-700); white-space: nowrap; }
+.sodo-note { margin-top: 12px; color: var(--muc-600); line-height: 1.5; }
+.sodo-survey { margin-top: 14px; }
+.sodo-survey summary { display: flex; align-items: center; gap: 10px; padding: 14px 16px; cursor: pointer; font-weight: 600; list-style: none; }
+.sodo-survey summary::-webkit-details-marker { display: none; }
+.sodo-survey summary svg { width: 22px; height: 22px; fill: var(--cham-700); flex: none; }
+.sodo-survey summary span { display: flex; flex-direction: column; }
+.sodo-survey summary small { font-weight: 400; color: var(--muc-600); }
+.survey-list { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 8px; }
+.survey-list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--giay-200); }
+.survey-list li > span { display: flex; flex-direction: column; font-size: .92rem; }
+.survey-list small { color: var(--muc-600); }
+.survey-list em { font-style: normal; color: var(--cham-700); }
+.plans-list .site-item .sodo-mini { margin-left: auto; }
+[data-theme="dem"] .sodo-khung { border-color: #4a433c; }
+[data-theme="dem"] .sodo-stops a { background: #1e1b18; box-shadow: 0 0 0 1px #3a342e; }
