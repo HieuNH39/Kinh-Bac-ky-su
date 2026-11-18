@@ -43,6 +43,7 @@ const routes = [
   [/^#\/map(?:\?route=([\w-]+))?$/, (m) => A.map(m[1])],
   [/^#\/routes$/, () => A.routesPage()],
   [/^#\/route\/([\w-]+)$/, (m) => A.routePage(m[1])],
+  [/^#\/site\/([\w-]+)\/plan$/, (m) => B.planPage(m[1])],   // đường dẫn cũ của thẻ Sơ đồ
   [/^#\/site\/([\w-]+)(?:\/(\w+))?$/, (m) => A.sitePage(m[1], m[2])],
   [/^#\/stop\/([\w-]+?)(\?qr)?$/, (m) => A.stopPage(m[1], !!m[2])],
   [/^#\/quiz\/([\w-]+)$/, (m) => B.quizPage(m[1])],
@@ -58,8 +59,9 @@ const routes = [
   [/^#\/qr(?:\/([\w-]+))?$/, (m) => B.qrSheet(m[1])],
   [/^#\/teacher$/, () => B.teacher()],
   [/^#\/so-do$/, () => B.plansIndex()],
+  [/^#\/so-do\/([\w-]+)(?:\/([\w-]+))?$/, (m) => B.planPage(m[1], m[2])],
 ];
-const navOf = (h) => (h.startsWith("#/map") ? "map" : /^#\/(route|site|stop|quiz)/.test(h) ? "routes" : h.startsWith("#/passport") ? "passport"
+const navOf = (h) => (h.startsWith("#/map") ? "map" : /^#\/(route|site|stop|quiz|so-do\/)/.test(h) ? "routes" : h.startsWith("#/passport") ? "passport"
   : /^#\/(more|settings|about|qr|teacher|timeline|festivals|food|plan|class|so-do)/.test(h) ? "more" : "home");
 
 // ---------- Nút quay lại (v3.3): có ở mọi trang trừ trang chủ ----------
@@ -73,6 +75,8 @@ function parentOf(h) {
   if ((m = h.match(/^#\/site\/([\w-]+)$/))) { const s = D.byId[m[1]]; return s?.route && D.routes[s.route] ? `#/route/${s.route}` : "#/"; }
   if (/^#\/route\//.test(h)) return "#/routes";
   if (/^#\/qr\/[\w-]+$/.test(h)) return "#/qr";
+  if ((m = h.match(/^#\/so-do\/([\w-]+)\/([\w-]+)$/))) return `#/stop/${m[2]}`;
+  if ((m = h.match(/^#\/so-do\/([\w-]+)$/))) return `#/site/${m[1]}`;
   if (/^#\/(settings|about|teacher|so-do)$/.test(h)) return "#/more";
   return "#/";
 }

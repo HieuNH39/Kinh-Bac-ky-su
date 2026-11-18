@@ -5,6 +5,7 @@ const lunarDay = (l, date) => (l.days ? l.days.find((d) => +nextFest({ lunar: { 
 import { LANGS } from "./i18n.js";
 import { esc, t, L, icon, gm, gmTerms, stampSvg, stampState, toast, download, fmtDate } from "./ui.js";
 import { foodCard, afterRender, qrSvg, stopUrl } from "./views-a.js";
+import { planFull, wirePlanFull } from "./sodo.js";
 
 const view = () => document.getElementById("view");
 const later = (fn) => setTimeout(fn, 0);
@@ -257,13 +258,28 @@ export async function classPage(key) {
   return `<div class="wrap empty">${t("classMode")}</div>`;
 }
 
+// ---------- Sơ đồ lớn của một di tích ----------
+export async function planPage(siteId, stopId) {
+  const s = await loadSite(siteId);
+  if (!s.plan) { location.replace(`#/site/${siteId}`); return ""; }
+  logEvent("open_plan", { site: siteId, stop: stopId || null });
+  later(() => {
+    const root = document.querySelector(".sodo-full"); if (!root) return;
+    onLeave(wirePlanFull(root, s, stopId, {
+      listen: (id) => { const it = audioItem(s, s.stops.find((x) => x.id === id)); if (it) Player.toggle(it); },
+      isPlaying: (id) => Player.isPlaying(id),
+    }));
+  });
+  return planFull(s, stopId);
+}
+
 // ---------- Sơ đồ các di tích ----------
 export function plansIndex() {
   const groups = D.index.routes.map((r, i) => ({ r, i, sites: r.sites.map((id) => D.byId[id]).filter((x) => x?.hasPlan) })).filter((g) => g.sites.length);
   return `<div class="wrap"><div class="section" style="margin-top:16px"><h2>${t("plansAll")}</h2></div>
     <p class="lead-text">${t("plansText")}.</p>
     ${groups.map(({ r, i, sites }) => `<h3 class="sodo-h">${t("navRoutes")} ${i + 1} · ${esc(L(r.name))}</h3>
-      <div class="site-list">${sites.map((s) => `<a class="card site-item" href="#/site/${s.id}/plan">
+      <div class="site-list">${sites.map((s) => `<a class="card site-item" href="#/so-do/${s.id}">
         ${s.cover ? `<img src="${esc(s.cover.thumb)}" alt="" loading="lazy">` : ""}
         <div><h3>${esc(L(s.name))}</h3><div class="small muted">${t("planStops", s.stopCount)}</div></div>${icon("plan", "")}</a>`).join("")}</div>`).join("")}
   </div>`;

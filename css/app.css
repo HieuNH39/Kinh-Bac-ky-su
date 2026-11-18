@@ -571,40 +571,80 @@ svg:not([width]) { width: 1.25em; height: 1.25em; fill: currentColor; flex: none
 }
 
 /* ---------- Sơ đồ tham quan ---------- */
-.sodo { margin-top: 14px; }
-.sodo-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
-.sodo-bar h2 { margin: 0; font-size: 1.25rem; }
-.sodo-bar .row { gap: 6px; align-items: center; }
-.sodo-khung { position: relative; overflow: hidden; border-radius: var(--r-lg); background: #f4ecdb;
-  border: 2.5px solid var(--muc-900); box-shadow: var(--bong-1); overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
-.sodo-khung:focus-visible { outline: 3px solid var(--son-600); outline-offset: 2px; }
-.sodo-zoom { width: 100%; transition: width .25s ease; }
-.sodo .sodo-svg { display: block; width: 100%; height: auto; max-height: 76vh; max-width: none; fill: initial; margin: 0 auto; }
-.sodo-khung.zoomed { overflow: auto; max-height: min(80vh, 920px); }
-.sodo-khung.zoomed .sodo-svg { max-height: none; }
-@media (min-width: 1024px) {
-  .sodo-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr); gap: 26px; align-items: start; }
-  .sodo-grid .sodo-map { position: sticky; top: 132px; }
-  .sodo-grid .sodo-h:first-child { margin-top: 0; }
-  .sodo-legend { grid-template-columns: 1fr; }
-}
+/* Thẻ sơ đồ trong trang di tích và trang điểm dừng: viền mực đậm, nền giấy để nổi hơn các thẻ trắng */
+.sodo-card { margin: 18px 0 6px; border-radius: 26px; background: var(--giay-50); border: 2.5px solid var(--muc-900);
+  box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 14px 34px rgba(30,27,24,.14); overflow: hidden; }
+.sodo-card-head { display: flex; align-items: center; gap: 12px; padding: 14px 14px 12px 16px; flex-wrap: wrap; }
+.sodo-card-head > div { flex: 1 1 180px; min-width: 0; }
+.sodo-card-head h2 { margin: 0; font-size: 1.22rem; }
+.sodo-card-head p { margin: 2px 0 0; font-size: .86rem; color: var(--muc-600); line-height: 1.4; }
+.sodo-badge { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: var(--son-600); color: #fff;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.25); }
+.sodo-badge svg { width: 24px; height: 24px; fill: currentColor; }
+.sodo-card-map { background: #f4ecdb; border-top: 1.5px solid var(--giay-300); border-bottom: 1.5px solid var(--giay-300); cursor: zoom-in; }
+.sodo-card .sodo-svg, .sodo-vp .sodo-svg { display: block; width: 100%; height: auto; max-width: none; fill: initial; margin: 0 auto; }
+.sodo-card .sodo-svg { max-height: 64vh; }
+.sodo-card.is-stop .sodo-svg { max-height: 46vh; }
+.sodo-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 6px 14px; flex-wrap: wrap; padding: 10px 16px 12px; }
+.sodo-mini-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0; padding: 0; list-style: none; font-size: .82rem; color: var(--muc-900); }
+.sodo-mini-legend li { display: flex; align-items: center; gap: 4px; }
+.sodo-mini-legend svg { width: 24px; height: 16px; }
+/* sao và chữ co lại khi phóng to (biến --k do trang sơ đồ lớn đặt) */
+.sodo-svg .st, .sodo-svg .lbs text { transform-box: fill-box; transform-origin: center; scale: var(--k, 1); transition: opacity .2s; }
+.sodo-svg .st-dim { opacity: .5; }
+.sodo-svg .st-on { scale: calc(var(--k, 1) * 1.12); }
 .sodo-svg a { cursor: pointer; }
 .sodo-svg a:focus-visible polygon:last-of-type { stroke: var(--vang-500); stroke-width: 1.6; }
 .sodo-svg .sodo-pulse { animation: sodo-nhip 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 @keyframes sodo-nhip { 50% { transform: scale(1.25); } }
-@media (prefers-reduced-motion: reduce) { .sodo-svg .sodo-pulse { animation: none; } .sodo-zoom { transition: none; } }
+/* Trang sơ đồ lớn */
+.sodo-full .crumb { margin-bottom: 0; }
+.sodo-full-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 4px 0 10px; }
+.sodo-full-head h1 { margin: 0; }
+.sodo-vp { position: relative; height: max(420px, calc(100svh - 300px - var(--player-h))); border-radius: 24px; border: 2.5px solid var(--muc-900);
+  background: #f4ecdb; overflow: hidden; touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none; box-shadow: var(--bong-1); }
+.sodo-vp:active { cursor: grabbing; }
+.sodo-vp:focus-visible { outline: 3px solid var(--son-600); outline-offset: 2px; }
+.sodo-vp .sodo-svg { height: 100%; }
+.sodo-ctl { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 8px; }
+.sodo-ctl button { width: 46px; height: 46px; border-radius: 15px; border: 0; display: grid; place-items: center; color: var(--muc-900); cursor: pointer;
+  background: rgba(255,253,249,.78); -webkit-backdrop-filter: blur(14px) saturate(180%); backdrop-filter: blur(14px) saturate(180%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.8), 0 4px 14px rgba(30,27,24,.18); }
+.sodo-ctl button:active { transform: scale(.94); }
+.sodo-ctl svg { width: 22px; height: 22px; }
+.sodo-hint { position: absolute; left: 10px; top: 10px; right: 70px; margin: 0; width: fit-content; max-width: 340px; padding: 7px 12px; border-radius: 14px;
+  font-size: .78rem; line-height: 1.35; color: var(--muc-900); background: rgba(255,253,249,.82); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  box-shadow: 0 2px 10px rgba(30,27,24,.12); pointer-events: none; transition: opacity .4s; }
+.sodo-vp.zoomed .sodo-hint, .sodo-vp.used .sodo-hint { opacity: 0; }
+.sodo-chips { display: flex; gap: 8px; overflow-x: auto; padding: 12px 2px 6px; scroll-snap-type: x proximity; scrollbar-width: none; }
+.sodo-chips::-webkit-scrollbar { display: none; }
+.sodo-chip { flex: none; scroll-snap-align: center; display: flex; align-items: center; gap: 8px; max-width: 250px; padding: 7px 14px 7px 7px; border-radius: 999px;
+  border: 0; background: var(--giay-50); color: var(--muc-900); font: inherit; font-size: .88rem; font-weight: 600; cursor: pointer; box-shadow: 0 0 0 1px var(--giay-300); text-align: left; }
+.sodo-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sodo-chip b, .sodo-stops b { flex: none; display: grid; place-items: center; width: 28px; height: 28px; color: #fff; font-size: .82rem; padding-top: 3px;
+  background: var(--son-600); clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.sodo-chip.on { background: var(--son-600); color: #fff; box-shadow: none; }
+.sodo-chip.on b { background: #fff; color: var(--son-600); }
+/* thẻ điểm đang chọn nổi ngay trên sơ đồ, không phải cuộn xuống mới thấy */
+.sodo-pick { position: absolute; left: 10px; right: 10px; bottom: 10px; padding: 12px 14px 12px; border-radius: 20px; cursor: auto;
+  background: rgba(255,253,249,.9); -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.8), 0 10px 30px rgba(30,27,24,.22); }
+.sodo-pick h3 { margin: 2px 40px 4px 0; font-size: 1.02rem; }
+.sodo-pick .row { margin-top: 10px; gap: 8px; }
+.sodo-pick-x { position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border-radius: 50%; border: 0; display: grid; place-items: center;
+  background: rgba(30,27,24,.07); color: var(--muc-900); cursor: pointer; }
+.sodo-pick-x svg { width: 18px; height: 18px; }
+@media (min-width: 760px) { .sodo-pick { right: auto; width: 380px; } }
+[data-theme="dem"] .sodo-pick { background: rgba(30,27,24,.88); color: #f4eee3; box-shadow: inset 0 0 0 1px rgba(255,255,255,.1), 0 10px 30px rgba(0,0,0,.4); }
+[data-theme="dem"] .sodo-pick-x { background: rgba(255,255,255,.1); color: #f4eee3; }
+.sodo-leg { margin-top: 14px; }
+.sodo-leg > summary { padding: 14px 16px; font-weight: 700; cursor: pointer; }
+.sodo-leg .card-body { padding-top: 0; }
 .sodo-here-msg { margin: 6px 2px 0; }
 .sodo-h { margin: 18px 0 8px; font-size: 1.05rem; }
 .sodo-legend { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px 14px; }
 .sodo-legend li { display: flex; align-items: center; gap: 10px; font-size: .9rem; color: var(--muc-900); }
 .sodo-legend svg { flex: none; width: 30px; height: 20px; }
-.sodo-stops { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 6px; }
-.sodo-stops a { display: flex; align-items: flex-start; gap: 10px; padding: 9px 12px; border-radius: 14px; background: var(--giay-50); text-decoration: none; color: inherit; box-shadow: 0 0 0 1px var(--giay-300); }
-.sodo-stops b { flex: none; display: grid; place-items: center; width: 28px; height: 28px; color: #fff; font-size: .85rem;
-  background: var(--son-600); clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); padding-top: 3px; }
-.sodo-stops span { display: flex; flex-direction: column; font-weight: 600; font-size: .95rem; }
-.sodo-stops small { font-weight: 400; color: var(--muc-600); font-size: .82rem; }
-.sodo-stops em { margin-left: auto; font-style: normal; font-size: .75rem; color: var(--cham-700); white-space: nowrap; }
 .sodo-note { margin-top: 12px; color: var(--muc-600); line-height: 1.5; }
 .sodo-survey { margin-top: 14px; }
 .sodo-survey summary { display: flex; align-items: center; gap: 10px; padding: 14px 16px; cursor: pointer; font-weight: 600; list-style: none; }
@@ -617,6 +657,11 @@ svg:not([width]) { width: 1.25em; height: 1.25em; fill: currentColor; flex: none
 .survey-list li > span { display: flex; flex-direction: column; font-size: .92rem; }
 .survey-list small { color: var(--muc-600); }
 .survey-list em { font-style: normal; color: var(--cham-700); }
-.plans-list .site-item .sodo-mini { margin-left: auto; }
-[data-theme="dem"] .sodo-khung { border-color: #4a433c; }
-[data-theme="dem"] .sodo-stops a { background: #1e1b18; box-shadow: 0 0 0 1px #3a342e; }
+@media (min-width: 1024px) { .sodo-vp { height: min(76vh, 820px); } }
+@media (prefers-reduced-motion: reduce) { .sodo-svg .sodo-pulse { animation: none; } .sodo-svg .st, .sodo-svg .lbs text, .sodo-hint { transition: none; } }
+[data-theme="dem"] .sodo-card { border-color: #5a5048; background: #1e1b18; }
+[data-theme="dem"] .sodo-card-map { border-color: #3a342e; }
+[data-theme="dem"] .sodo-vp { border-color: #5a5048; }
+[data-theme="dem"] .sodo-chip { background: #1e1b18; color: #f4eee3; box-shadow: 0 0 0 1px #3a342e; }
+[data-theme="dem"] .sodo-chip.on { background: var(--son-600); }
+[data-theme="dem"] .sodo-ctl button, [data-theme="dem"] .sodo-hint { background: rgba(30,27,24,.72); color: #f4eee3; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }

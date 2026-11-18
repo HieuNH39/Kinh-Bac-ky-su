@@ -254,7 +254,7 @@ function entrance(e, u) {
 }
 
 // ---------- SVG hoàn chỉnh ----------
-export function planSvg(site, plan, { id = "sd", link = true } = {}) {
+export function planSvg(site, plan, { id = "sd", link = true, focus = null } = {}) {
   const u = U(plan), [x0, y0, w, h] = plan.vb;
   const stops = site.stops.map((st, i) => ({ st, i, xy: plan.stops[st.id] })).filter((q) => q.xy);
   const measured = new Set(plan.measured || []);
@@ -275,12 +275,14 @@ export function planSvg(site, plan, { id = "sd", link = true } = {}) {
     ${plan.els.filter((e) => e.t === "sym").map((e) => sym(e, u)).join("")}
     ${routePts.length > 1 ? `<polyline points="${pts(routePts)}" fill="none" stroke="#fffaf0" stroke-width="${R2(u * 1.1)}" stroke-linejoin="round" opacity=".8"/>
       <polyline points="${pts(routePts)}" fill="none" stroke="${C.son}" stroke-width="${R2(u * 0.5)}" stroke-dasharray="${R2(u * 1.3)} ${R2(u * 0.9)}" stroke-linejoin="round" marker-mid="url(#${id}-mui)"/>` : ""}
-    ${placeLabels(plan, u, stops.map((q) => q.xy))}
+    <g class="lbs">${placeLabels(plan, u, stops.map((q) => q.xy))}</g>
     ${plan.entrance.map((e) => entrance(e, u)).join("")}
     <g class="sodo-here" style="display:none"></g>
+    ${focus ? (() => { const f = plan.stops[focus]; return f ? `<circle class="sodo-pulse" cx="${R2(f[0])}" cy="${R2(f[1])}" r="${R2(u * 5.2)}" fill="${C.hoe}" opacity=".45"/>` : ""; })() : ""}
     ${stops.map(({ st, i, xy }) => {
-      const s = star(xy[0], xy[1], i, u, measured.has(st.id));
-      return link ? `<a href="#/stop/${esc(st.id)}" aria-label="${i}. ${esc(L(st.title))}">${s}</a>` : s;
+      const s = star(xy[0], xy[1], i, u * (st.id === focus ? 1.3 : 1), measured.has(st.id));
+      const cls = `st${focus && st.id !== focus ? " st-dim" : ""}${st.id === focus ? " st-on" : ""}`;
+      return link ? `<a class="${cls}" href="#/stop/${esc(st.id)}" data-stop="${esc(st.id)}" aria-label="${i}. ${esc(L(st.title))}">${s}</a>` : `<g class="${cls}" data-stop="${esc(st.id)}">${s}</g>`;
     }).join("")}
     ${compass(plan, u)}${scaleBar(plan, u)}
   </svg>`;
@@ -312,44 +314,183 @@ function legend(site, plan) {
   return `<ul class="sodo-legend">${items.map(([s, l]) => `<li>${s}<span>${esc(l)}</span></li>`).join("")}</ul>`;
 }
 
-export function planSection(site) {
-  const plan = site.plan;
-  if (!plan) return `<p class="muted">${t("planNone")}</p>`;
-  const total = site.stops.length, n = plan.measured?.length || 0;
-  const note = plan.mode === "met" ? t("planNoteMet") : t("planNoteMinhHoa");
-  return `<div class="sodo">
-    <div class="sodo-bar"><h2>${t("planTitle")}</h2>
-      <div class="row"><button class="icon-btn" type="button" data-zoom="-1" aria-label="${t("zoomOut")}">${icon("minus")}</button>
-      <button class="icon-btn" type="button" data-zoom="1" aria-label="${t("zoomIn")}">${icon("plus")}</button>
-      <button class="btn small" type="button" data-plan-png>${icon("download")}${t("downloadPlan")}</button></div></div>
-    <div class="sodo-grid"><div class="sodo-map">
-    <div class="sodo-khung" tabindex="0" aria-label="${esc(t("planTitle"))}"><div class="sodo-zoom">${planSvg(site, plan)}</div></div>
-    <div class="sodo-here-msg small muted" hidden></div></div>
-    <div><h3 class="sodo-h">${t("legend")}</h3>
-    ${legend(site, plan)}
-    <ol class="sodo-stops" start="0">${site.stops.map((st, i) => `<li><a href="#/stop/${esc(st.id)}"><b>${i}</b><span>${esc(L(st.title))}<small>${esc(L(st.where) || "")}</small></span>${(plan.measured || []).includes(st.id) ? `<em>${t("measuredShort")}</em>` : ""}</a></li>`).join("")}</ol>
-    <p class="sodo-note small">${esc(note)}${n ? ` ${esc(t("planMeasured", n, total, plan.rms))}` : ""}
-      ${plan.source ? `<br>${t("planSource")}: ${esc(L(plan.source))}` : ""}${plan.osm ? `<br>${t("planOsm")}` : ""}</p>
-    ${surveyBlock(site)}
-  </div></div></div>`;
+const noteOf = (plan) => (plan.mode === "met" ? t("planNoteMet") : t("planNoteMinhHoa"));
+const miniLegend = (plan) => `<ul class="sodo-mini-legend">
+  <li>${sw(`<polygon points="12,1 14.6,6.4 20.5,6.9 16,10.8 17.4,16 12,13.1 6.6,16 8,10.8 3.5,6.9 9.4,6.4" fill="${C.son}" stroke="#fff"/>`)}${t("lgStopShort")}</li>
+  <li>${sw(`<path d="M2,8 H22" stroke="${C.son}" stroke-width="2" stroke-dasharray="4 3"/>`)}${t("lgRoute")}</li>
+  ${plan.entrance.length ? `<li>${sw(`<path d="M12,1 L17,7 L14,7 L14,15 L10,15 L10,7 L7,7 Z" fill="${C.cham}"/>`)}${t("lgEntrance")}</li>` : ""}
+  ${plan.georef ? `<li>${sw(`<circle cx="12" cy="8" r="3.6" fill="${C.chamXanh}" stroke="#fff" stroke-width="1.4"/>`)}${t("lgHere")}</li>` : ""}</ul>`;
+
+// Thẻ sơ đồ đặt ngay trong trang di tích (và trang điểm dừng, có tô sáng điểm đang xem)
+export function planCard(site, { focus = null } = {}) {
+  const plan = site.plan; if (!plan) return "";
+  const i = focus ? site.stops.findIndex((x) => x.id === focus) : -1;
+  const href = `#/so-do/${site.id}${focus ? `/${focus}` : ""}`;
+  return `<section class="sodo-card${focus ? " is-stop" : ""}" aria-label="${esc(t("planTitle"))}">
+    <div class="sodo-card-head"><span class="sodo-badge">${icon("plan")}</span>
+      <div><h2>${focus ? t("planHere") : t("planTitle")}</h2><p>${focus ? t("planHereSub", i, site.stops.length - 1) : t("planCardSub", site.stops.length)}</p></div>
+      <a class="btn small primary" href="${href}">${icon("expand")}${t("planOpen")}</a></div>
+    <div class="sodo-card-map" data-open="${href}">${planSvg(site, plan, { id: `c-${site.id}`, focus })}</div>
+    <div class="sodo-card-foot">${miniLegend(plan)}<span class="tiny muted">${esc(plan.mode === "met" ? t("planShortMet") : t("planShortMinhHoa"))}</span></div>
+  </section>`;
+}
+export function wireCard(root, site) {
+  const box = root.querySelector(".sodo-card-map"); if (!box) return () => {};
+  box.addEventListener("click", (e) => { if (!e.target.closest("a")) location.hash = box.dataset.open; });
+  return hereDot(root, site.plan);
 }
 
-// ---------- tương tác ----------
-export function wirePlan(root, site) {
-  const plan = site.plan; if (!plan) return () => {};
-  const zoomBox = root.querySelector(".sodo-zoom"), khung = root.querySelector(".sodo-khung");
-  let z = 1;
-  root.querySelectorAll("[data-zoom]").forEach((b) => b.addEventListener("click", () => {
-    const k = Number(b.dataset.zoom), cx = (khung.scrollLeft + khung.clientWidth / 2) / zoomBox.offsetWidth, cy = (khung.scrollTop + khung.clientHeight / 2) / zoomBox.offsetHeight;
-    z = Math.min(4, Math.max(1, z * (k > 0 ? 1.5 : 1 / 1.5)));
-    khung.classList.toggle("zoomed", z > 1);
-    zoomBox.style.width = `${z * 100}%`;
-    khung.scrollLeft = cx * zoomBox.offsetWidth - khung.clientWidth / 2; khung.scrollTop = cy * zoomBox.offsetHeight - khung.clientHeight / 2;
-  }));
+// Trang sơ đồ lớn: kéo, chụm hai ngón hoặc lăn chuột để phóng; chọn điểm để nghe
+export function planFull(site, focus) {
+  const plan = site.plan;
+  const total = site.stops.length, n = plan.measured?.length || 0;
+  return `<div class="wrap sodo-full">
+    <a class="crumb" href="#/site/${site.id}">${esc(L(site.name))}</a>
+    <div class="sodo-full-head"><h1>${t("planTitle")}</h1>
+      <button class="btn small" type="button" data-plan-png>${icon("download")}${t("downloadPlan")}</button></div>
+    <div class="sodo-vp" tabindex="0" aria-label="${esc(t("planTitle"))}: ${esc(L(site.name))}. ${esc(t("planGesture"))}">
+      ${planSvg(site, plan, { id: `f-${site.id}`, focus })}
+      <div class="sodo-ctl" role="group" aria-label="${esc(t("planTitle"))}">
+        <button type="button" data-z="in" aria-label="${t("zoomIn")}">${icon("plus")}</button>
+        <button type="button" data-z="out" aria-label="${t("zoomOut")}">${icon("minus")}</button>
+        <button type="button" data-z="fit" aria-label="${t("planFit")}">${icon("expand")}</button>
+        ${plan.georef ? `<button type="button" data-z="me" aria-label="${t("planLocate")}">${icon("gps")}</button>` : ""}
+      </div>
+      <p class="sodo-hint">${t("planGesture")}</p>
+      <div class="sodo-pick" hidden></div>
+    </div>
+    <div class="sodo-here-msg small muted" hidden></div>
+    <div class="sodo-chips" role="list">${site.stops.map((st, i) => `<button type="button" role="listitem" class="sodo-chip${st.id === focus ? " on" : ""}" data-pick="${esc(st.id)}"><b>${i}</b><span>${esc(L(st.title))}</span></button>`).join("")}</div>
+    <details class="card sodo-leg" open><summary>${t("legend")}</summary><div class="card-body">${legend(site, plan)}
+      <p class="sodo-note small">${esc(noteOf(plan))}${n ? ` ${esc(t("planMeasured", n, total, plan.rms))}` : ""}
+      ${plan.source ? `<br>${t("planSource")}: ${esc(L(plan.source))}` : ""}${plan.osm ? `<br>${t("planOsm")}` : ""}</p></div></details>
+    ${surveyBlock(site)}
+  </div>`;
+}
+
+export function wirePlanFull(root, site, focus, { listen, isPlaying } = {}) {
+  const plan = site.plan, vp = root.querySelector(".sodo-vp"), svg = vp.querySelector("svg");
+  const P = plan.vb, reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let base = P.slice(), vb = P.slice(), anim = 0;
+  const fitBase = () => {   // khung nhìn gốc vừa khít ô hiển thị
+    const a = vp.clientWidth / Math.max(1, vp.clientHeight), [x, y, w, h] = P;
+    base = w / h > a ? [x, y + h / 2 - w / a / 2, w, w / a] : [x + w / 2 - (h * a) / 2, y, h * a, h];
+  };
+  const clamp = () => {
+    const z = base[2] / vb[2];
+    if (z < 1) vb = base.slice();
+    if (base[2] / vb[2] > 8) { const cx = vb[0] + vb[2] / 2, cy = vb[1] + vb[3] / 2; vb[2] = base[2] / 8; vb[3] = base[3] / 8; vb[0] = cx - vb[2] / 2; vb[1] = cy - vb[3] / 2; }
+    const cx = Math.min(P[0] + P[2], Math.max(P[0], vb[0] + vb[2] / 2)), cy = Math.min(P[1] + P[3], Math.max(P[1], vb[1] + vb[3] / 2));
+    vb[0] = cx - vb[2] / 2; vb[1] = cy - vb[3] / 2;
+  };
+  const apply = () => {
+    clamp();
+    svg.setAttribute("viewBox", vb.map((v) => v.toFixed(2)).join(" "));
+    svg.style.setProperty("--k", Math.pow(vb[2] / base[2], 0.62).toFixed(3));   // sao, chữ không phình quá khi phóng to
+    vp.classList.toggle("zoomed", base[2] / vb[2] > 1.05);
+  };
+  const zoomAt = (f, cx, cy) => { const nw = vb[2] / f, nh = vb[3] / f; vb = [cx - (cx - vb[0]) / f, cy - (cy - vb[1]) / f, nw, nh]; apply(); };
+  const toUnits = (px, py) => { const r = svg.getBoundingClientRect(); return [vb[0] + ((px - r.left) / r.width) * vb[2], vb[1] + ((py - r.top) / r.height) * vb[3]]; };
+  const flyTo = (target) => {
+    cancelAnimationFrame(anim);
+    if (reduce) { vb = target; apply(); return; }
+    const from = vb.slice(), t0 = performance.now();
+    const step = (now) => { const k = Math.min(1, (now - t0) / 380), e = 1 - (1 - k) ** 3; vb = from.map((v, i) => v + (target[i] - v) * e); apply(); if (k < 1) anim = requestAnimationFrame(step); };
+    anim = requestAnimationFrame(step);
+  };
+  const around = ([x, y], z) => { const w = base[2] / z, h = base[3] / z; return [x - w / 2, y - h / 2, w, h]; };
+  fitBase(); vb = base.slice(); apply();
+  const ro = new ResizeObserver(() => { const z = base[2] / vb[2], cx = vb[0] + vb[2] / 2, cy = vb[1] + vb[3] / 2; fitBase(); vb = around([cx, cy], z); apply(); });
+  ro.observe(vp);
+  // kéo và chụm
+  const ptrs = new Map(); let start = null, moved = 0;
+  vp.addEventListener("pointerdown", (e) => {
+    if (e.target.closest(".sodo-ctl, .sodo-pick")) return;
+    vp.classList.add("used");
+    ptrs.set(e.pointerId, [e.clientX, e.clientY]); start = { vb: vb.slice(), p: new Map(ptrs) }; moved = 0;
+  });
+  vp.addEventListener("pointermove", (e) => {
+    if (!ptrs.has(e.pointerId) || !start) return;
+    ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+    const r = svg.getBoundingClientRect(), sx = start.vb[2] / r.width;
+    if (ptrs.size === 1) {
+      const [x0, y0] = start.p.get(e.pointerId) || [e.clientX, e.clientY], dx = e.clientX - x0, dy = e.clientY - y0;
+      moved = Math.max(moved, Math.hypot(dx, dy));
+      if (moved > 6) { if (!vp.hasPointerCapture(e.pointerId)) vp.setPointerCapture(e.pointerId); vb = [start.vb[0] - dx * sx, start.vb[1] - dy * sx, start.vb[2], start.vb[3]]; apply(); }
+    } else if (ptrs.size === 2 && start.p.size === 2) {
+      const [a0, b0] = [...start.p.values()], [a1, b1] = [...ptrs.values()];
+      const d0 = Math.hypot(a0[0] - b0[0], a0[1] - b0[1]), d1 = Math.hypot(a1[0] - b1[0], a1[1] - b1[1]);
+      const m0 = [(a0[0] + b0[0]) / 2, (a0[1] + b0[1]) / 2], m1 = [(a1[0] + b1[0]) / 2, (a1[1] + b1[1]) / 2];
+      const f = d1 / Math.max(1, d0); moved = 99;
+      const ux = start.vb[0] + ((m0[0] - r.left) / r.width) * start.vb[2], uy = start.vb[1] + ((m0[1] - r.top) / r.height) * start.vb[3];
+      const nw = start.vb[2] / f, nh = start.vb[3] / f;
+      vb = [ux - ((m1[0] - r.left) / r.width) * nw, uy - ((m1[1] - r.top) / r.height) * nh, nw, nh]; apply();
+    }
+  });
+  const end = (e) => { ptrs.delete(e.pointerId); start = ptrs.size ? { vb: vb.slice(), p: new Map(ptrs) } : null; };
+  vp.addEventListener("pointerup", end); vp.addEventListener("pointercancel", end);
+  vp.addEventListener("click", (e) => { if (moved > 6) { e.preventDefault(); e.stopPropagation(); } }, true);
+  vp.addEventListener("wheel", (e) => { e.preventDefault(); const [x, y] = toUnits(e.clientX, e.clientY); zoomAt(Math.exp(-e.deltaY * 0.0016), x, y); }, { passive: false });
+  vp.addEventListener("dblclick", (e) => { if (e.target.closest("a, .sodo-ctl")) return; const [x, y] = toUnits(e.clientX, e.clientY); zoomAt(1.8, x, y); });
+  vp.addEventListener("keydown", (e) => {
+    const k = { "+": "in", "=": "in", "-": "out", "0": "fit" }[e.key];
+    if (k) { e.preventDefault(); ctl(k); return; }
+    const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+    if (d) { e.preventDefault(); vb[0] += d[0] * vb[2] * 0.12; vb[1] += d[1] * vb[3] * 0.12; apply(); }
+  });
+  const ctl = (z) => {
+    const cx = vb[0] + vb[2] / 2, cy = vb[1] + vb[3] / 2;
+    if (z === "in") flyTo(around([cx, cy], (base[2] / vb[2]) * 1.6));
+    else if (z === "out") flyTo(around([cx, cy], Math.max(1, (base[2] / vb[2]) / 1.6)));
+    else if (z === "fit") flyTo(base.slice());
+    else if (z === "me") {
+      if (!Geo.position) { Geo.start(); toast(t("gpsWaiting")); return; }
+      const xy = geoToPlan(plan, Geo.position.lat, Geo.position.lng);
+      if (xy) flyTo(around(xy, 2.6));
+    }
+  };
+  root.querySelectorAll("[data-z]").forEach((b) => b.addEventListener("click", () => ctl(b.dataset.z)));
+  // chọn điểm: bấm sao trên sơ đồ hoặc thẻ bên dưới
+  const sheet = root.querySelector(".sodo-pick");
+  const pick = (id, fly = true) => {
+    const i = site.stops.findIndex((x) => x.id === id), st = site.stops[i]; if (!st) return;
+    root.querySelectorAll(".sodo-chip").forEach((c) => c.classList.toggle("on", c.dataset.pick === id));
+    svg.querySelectorAll(".st").forEach((g) => { g.classList.toggle("st-on", g.dataset.stop === id); g.classList.toggle("st-dim", g.dataset.stop !== id); });
+    const chip = root.querySelector(`.sodo-chip[data-pick="${id}"]`), row = chip?.parentElement;   // chỉ cuộn ngang dải thẻ, không cuộn cả trang
+    if (chip) row.scrollTo({ left: chip.offsetLeft - row.clientWidth / 2 + chip.offsetWidth / 2, behavior: reduce ? "auto" : "smooth" });
+    const playing = isPlaying?.(id);
+    sheet.hidden = false;
+    sheet.innerHTML = `<button class="sodo-pick-x" type="button" aria-label="${t("close")}">${icon("close")}</button>
+      <span class="label">${t("stopOf", i, site.stops.length - 1)}</span><h3>${esc(L(st.title))}</h3>
+      <div class="small muted">${icon("pin", "")} ${esc(L(st.where) || "")}</div>
+      <div class="row">${listen ? `<button class="btn primary small" type="button" data-listen="${esc(id)}">${icon(playing ? "pause" : "play")}${t(playing ? "pause" : "listen")}</button>` : ""}
+      <a class="btn small" href="#/stop/${esc(id)}">${t("planOpenStop")}</a></div>`;
+    sheet.querySelector("[data-listen]")?.addEventListener("click", () => { listen(id); setTimeout(() => pick(id, false), 120); });
+    sheet.querySelector(".sodo-pick-x").addEventListener("click", () => {
+      sheet.hidden = true;
+      root.querySelectorAll(".sodo-chip").forEach((c) => c.classList.remove("on"));
+      svg.querySelectorAll(".st").forEach((g) => g.classList.remove("st-on", "st-dim"));
+    });
+    // đưa sao vào giữa phần sơ đồ còn trống phía trên thẻ điểm
+    const xy = plan.stops[id];
+    if (fly && xy) {
+      const z = Math.max(2.2, base[2] / vb[2]), h = base[3] / z, cover = (sheet.offsetHeight + 10) / Math.max(1, vp.clientHeight);
+      flyTo(around([xy[0], xy[1] + (h * cover) / 2], z));
+    }
+  };
+  svg.addEventListener("click", (e) => { const a = e.target.closest("a[data-stop]"); if (!a) return; e.preventDefault(); pick(a.dataset.stop); });
+  root.querySelectorAll("[data-pick]").forEach((b) => b.addEventListener("click", () => pick(b.dataset.pick)));
+  if (focus) setTimeout(() => pick(focus), 60);
   root.querySelector("[data-plan-png]")?.addEventListener("click", () => exportPng(site));
   wireSurvey(root, site);
-  // chấm "Bạn đang ở đây"
+  const offHere = hereDot(root, plan);
+  return () => { ro.disconnect(); offHere(); cancelAnimationFrame(anim); };
+}
+
+// chấm "Bạn đang ở đây" (chỉ khi sơ đồ đã khớp GPS)
+function hereDot(root, plan) {
   const here = root.querySelector(".sodo-here"), msg = root.querySelector(".sodo-here-msg");
+  if (!here) return () => {};
   const draw = () => {
     const show = (v) => { here.style.display = v ? "" : "none"; };
     if (!plan.georef || !Geo.position) { show(false); if (msg) msg.hidden = true; return; }
@@ -359,7 +500,7 @@ export function wirePlan(root, site) {
     const acc = (Geo.accuracy || 0) / (metersPerUnit(plan) || 1);
     here.innerHTML = `<circle cx="${R2(xy[0])}" cy="${R2(xy[1])}" r="${R2(Math.max(acc, u * 2))}" fill="${C.chamXanh}" opacity=".15"/>
       <circle class="sodo-pulse" cx="${R2(xy[0])}" cy="${R2(xy[1])}" r="${R2(u * 1.5)}" fill="${C.chamXanh}" stroke="#fff" stroke-width="${R2(u * 0.5)}"/>
-      ${txt(xy[0], xy[1] - u * 2.6, t("lgHere"), u, { size: 2, fill: C.chamXanh, weight: 700 })}`;
+      <g class="lbs">${txt(xy[0], xy[1] - u * 2.6, t("lgHere"), u, { size: 2, fill: C.chamXanh, weight: 700 })}</g>`;
     show(true); if (msg) msg.hidden = true;
   };
   draw();
